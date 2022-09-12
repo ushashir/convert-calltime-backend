@@ -1,10 +1,24 @@
-import express, { Request, Response, NextFunction} from 'express';
-const router = express.Router();
+import {Router} from 'express';
+import {registerUser} from '../controller/userController'
 
-/* GET users listing. */
-router.get('/', function(req:Request, res:Response, next:NextFunction) {
-  res.send('respond with a resource');
-   next();
+const router = Router();
+
+/* POST register users */
+router.post('/', async (req, res) => {
+  try {
+    const data = req.body;
+    const response = await registerUser(data)
+    res.status(201).json({
+      msg: "success, new user created",
+      response
+    })
+  } catch (error) {
+    res.status(500).json({
+      msg: error
+    })
+  }
+  
+  
 });
 
 export default router;
