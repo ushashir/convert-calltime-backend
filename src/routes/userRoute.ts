@@ -2,9 +2,9 @@ import express, { Request, Response, NextFunction} from 'express';
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req:Request, res:Response, next:NextFunction) {
+router.get('/', (req, res) =>{
   res.send('respond with a resource');
-   next();
+  
 });
 
 export default router;
