@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response , NextFunction} from 'express';
 import nodemailer from "nodemailer"
 import "dotenv/config"
 
-export async function sendEmail(req: Request, res: Response) {
-    const password = process.env.EMAIL_PASS
-    const { email, name, message } = req.body;
+export async function sendEmail(req: express.Request | unknown, res: express.Response) {
+    const password = process.env.EMAIL_PASS as string 
+    // const { email, name, message } = req.body;
    try{
     const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -22,16 +22,14 @@ export async function sendEmail(req: Request, res: Response) {
     };
     transporter.sendMail(mailOptions, function (err, info) {
         if (err) {
-        
             res.status(400).json({
-            message: "An error occured",
+            message: "An error occurred",
             err
         })
         } else {
-
             res.status(200).json({
-            message: "Email sent successfully"
-            err
+            message: "Email sent successfully",
+            info
         })
         }
     }

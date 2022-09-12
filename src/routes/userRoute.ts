@@ -1,10 +1,7 @@
 import express, { Request, Response, NextFunction} from 'express';
+import { sendEmail } from '../controller/emailServices';
 const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req:Request, res:Response, next:NextFunction) {
-  res.send('respond with a resource');
-   next();
-});
+router.post('/confirmEmail', sendEmail)
 
 export default router;
