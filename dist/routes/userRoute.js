@@ -1,14 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const router = express_1.default.Router();
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-    res.send('respond with a resource');
-    next();
+const express_1 = require("express");
+const userController_1 = require("../controller/userController");
+const router = (0, express_1.Router)();
+/* POST register users */
+router.post("/", async (req, res) => {
+    try {
+        const data = req.body;
+        const response = await (0, userController_1.registerUser)(data);
+        res.status(201).json({
+            msg: "success, new user created",
+            response
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: error
+        });
+    }
 });
 exports.default = router;
 //# sourceMappingURL=userRoute.js.map
