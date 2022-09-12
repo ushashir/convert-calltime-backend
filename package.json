@@ -8,6 +8,7 @@
     "compile": "tsc -w",
     "lint": "eslint . --ext .ts",
     "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}",
+    "lint-fix": "eslint ./src --fix",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -49,12 +50,14 @@
     "@types/node": "^18.7.16",
     "@types/typescript": "^2.0.0",
     "@types/uuid": "^8.3.4",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
     "onchange": "^7.1.0",
     "prettier": "2.7.1"
   },
   "lint-staged": {
-    "src/*.{js,ts}": [
-      "yarn lint",
+    "src/*.{js,jsx,ts,tsx}": [
+      "yarn eslint",
       "yarn prettier --write"
     ]
   }
