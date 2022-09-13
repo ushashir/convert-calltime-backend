@@ -3,6 +3,7 @@ import prisma from "../utils/prismaClient";
 import {emailValidation} from "../utils/validation";
 import { emailServices } from "../utils/emailService";
 import jwt from "jsonwebtoken";
+import { updateUser } from "./userController";
 
 dotenv.config();
 
@@ -16,15 +17,15 @@ export async function sendEmail(email:Record<string, unknown>) {
 	if(!userData) throw userData;
 
 	const response = await emailServices(userData);
-    return response;
+	return response;
 
 }
 
 export async function verifyUser(token:string) {
-    const decoded = jwt.verify(token, process.env.AUTH_SECRET as string);
-     const id = decoded as unknown as Record<string, number>;
-    const user = await prisma.user.findUnique({where: {id: id.user_id}});
-    if(!user) throw "user not found";
-
-    
+	const decoded = jwt.verify(token, process.env.AUTH_SECRET as string);
+	const id = decoded as unknown as Record<string, number>;
+	const user = await prisma.user.findUnique({where: {id: id.user_id}});
+	if(!user) throw "user not found";
+	const response = await updateUser({isVerified:true}, user.id);
+	return response;
 }

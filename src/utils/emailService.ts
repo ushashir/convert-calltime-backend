@@ -8,11 +8,11 @@ dotenv.config();
 
 
 export async function emailServices(data: Record<string, unknown>) {
-    const {email, id, username} = data;
+	const {email, id, username} = data;
 
 	const token = jwt.sign({ user_id: id }, process.env.AUTH_SECRET as string, {
 		expiresIn: "1h",
-	})
+	});
 
 	const link = `${process.env.BASE_URL}/api/users/verify/${token}`;
 	const emailTemplate = `
@@ -284,6 +284,6 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 
 	};
 
-    return transporter.sendMail(mailOptions, (err, info)=> err?err:info.response);
+	return transporter.sendMail(mailOptions, (err, info)=> err?err:info.response);
 }
 
