@@ -1,5 +1,6 @@
-import { registerUSerSchema, loginUserSchema, updateUserSchema } from "../utils/validation";
+import { registerUSerSchema, loginUserSchema, updateUserSchema, emailSchema } from "../utils/validation";
 import prisma from "../utils/prismaClient";
+import jwt from "jsonwebtoken";
 import { decryptPassword, encryptPassword } from "../utils/hashPassword";
 import { generateAccessToken } from "../utils/authMiddleware"
 
@@ -69,12 +70,7 @@ export async function loginUser(data: Record<string, unknown>) {
 }
 
 export async function updateUser(data: Record<string, unknown>, id: number) {
-	const {
-		firstName,
-		lastName,
-		phone
-	} = data
-
+	
 	const validData = updateUserSchema.safeParse(data);
 	if (!validData.success) {
 		throw validData.error;
@@ -85,21 +81,33 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 	if (!record) {
 		throw "Cannot find user"
 	}
-
+	const details = validData.data
 	return prisma.user.update({
 		where: {
 			id
 		},
 		data: {
-			firstName: firstName as string,
-			lastName: lastName as string,
-			phone: phone as string
-		},
-		select: {
-			firstName: true,
-			lastName: true,
-			phone: true
+			firstName: details.firstName,
+			lastName: details.lastName,
+			phone: details.phone
 		}
 	});
 
+}
+
+export async function forgotPassword(data:unknown) {
+	const validData = emailSchema.safeParse(data)
+	if (!validData.success) throw validData.error;
+	const email = validData.data.email
+	const user = await prisma.user.findUnique({ where: { email } })
+	if (!user) throw "User does not exist";
+
+	const token = jwt.sign({a:1}, 'key', {expiresIn: 1hr});
+	//TODO - send a mail to user with token url
+	
+
+}
+
+export async function resetPassword(data:string) {
+	
 }

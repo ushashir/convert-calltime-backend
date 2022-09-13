@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { registerUser, loginUser, updateUser } from "../controller/userController";
+import {Router} from "express";
+import {registerUser, loginUser,updateUser, forgotPassword} from "../controller/userController";
 
 
 const router = Router();
@@ -14,24 +14,22 @@ router.post("/", async (req, res) => {
 			response
 		});
 	} catch (error) {
-		console.log("########", error)
 		res.status(500).json({
 			msg: error
 		});
 	}
 });
 
-/* Login users */
+/*POST Login users */
 router.post("/login", async (req, res) => {
 	try {
 		const data = req.body;
 		const response = await loginUser(data);
 		res.status(201).json({
 			msg: "User successfully logged in",
-			response
-		})
-	} catch (error) {
-		res.status(500).json({ msg: error })
+			response})
+	}catch(error) {
+		res.status(500).json({msg: error})
 	}
 });
 
@@ -51,6 +49,19 @@ router.patch("/:id", async (req, res) => {
 		});
 	}
 
+});
+
+/*POST forgot password */
+router.get("/", async (req, res) => {
+	try {
+		const data = req.body;
+		const response = await forgotPassword(data);
+		res.status(201).json({
+			msg: "Password recovery",
+			response})
+	}catch(error) {
+		res.status(500).json({msg: error})
+	}
 });
 
 export default router;
