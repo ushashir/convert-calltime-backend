@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
     }
 });
 /* Login users */
-router.get("/", async (req, res) => {
+router.post("/login", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.loginUser)(data);
@@ -32,6 +32,23 @@ router.get("/", async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ msg: error });
+    }
+});
+/* POST update user */
+router.patch("/:id", async (req, res) => {
+    try {
+        const data = req.body;
+        const { id } = req.params;
+        const response = await (0, userController_1.updateUser)(data, Number(id));
+        res.status(200).json({
+            msg: "success, user updated",
+            response
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: error
+        });
     }
 });
 exports.default = router;

@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
 });
 
 /* Login users */
-router.get("/", async (req, res) => {
+router.post("/login", async (req, res) => {
 	try {
 		const data = req.body;
 		const response = await loginUser(data);

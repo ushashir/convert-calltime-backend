@@ -38,7 +38,8 @@ export async function registerUser(data: Record<string, unknown>) {
 			lastName: true,
 			userName: true,
 			email: true,
-			phone: true
+			phone: true,
+			id: true
 		}
 	});
 }

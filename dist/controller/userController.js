@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.registerUser = void 0;
+exports.updateUser = exports.loginUser = exports.registerUser = void 0;
 const validation_1 = require("../utils/validation");
 const prismaClient_1 = __importDefault(require("../utils/prismaClient"));
 const hashPassword_1 = require("../utils/hashPassword");
@@ -41,7 +41,8 @@ async function registerUser(data) {
             lastName: true,
             userName: true,
             email: true,
-            phone: true
+            phone: true,
+            id: true
         }
     });
 }
@@ -68,4 +69,31 @@ async function loginUser(data) {
     return (0, authMiddleware_1.generateAccessToken)(user.id);
 }
 exports.loginUser = loginUser;
+async function updateUser(data, id) {
+    const { firstName, lastName, phone } = data;
+    const validData = validation_1.updateUserSchema.safeParse(data);
+    if (!validData.success) {
+        throw validData.error;
+    }
+    const record = await prismaClient_1.default.user.findFirst({ where: { id } });
+    if (!record) {
+        throw "Cannot find user";
+    }
+    return prismaClient_1.default.user.update({
+        where: {
+            id
+        },
+        data: {
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone
+        },
+        select: {
+            firstName: true,
+            lastName: true,
+            phone: true
+        }
+    });
+}
+exports.updateUser = updateUser;
 //# sourceMappingURL=userController.js.map
