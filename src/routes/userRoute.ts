@@ -21,7 +21,7 @@ router.post("/confirmation", async(req, res) => {
 		res.status(200).json({message: "Email sent successfully", response});
   
 	} catch (error) {
-		// console.log(error);
+		
 		res.status(500).json({
       
 			message: "An error occurred",
