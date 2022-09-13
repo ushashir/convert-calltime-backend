@@ -4,13 +4,14 @@ import {emailValidation} from "../utils/validation";
 
 dotenv.config();
 
-export async function sendEmail(email:string) {
+export async function sendEmail(email:Record<string, unknown>) {
 	const password = process.env.EMAIL_PASS as string; 
 	const isValid = emailValidation.safeParse(email);
     
 	if(!isValid.success) {
-		throw new Error("Invalid email");
+		throw isValid.error
 	}
+    console.log(isValid.data + "  ###");
 	const transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
@@ -26,6 +27,6 @@ export async function sendEmail(email:string) {
 		text: "Please confirm your email",
 		// html: `<p>${message}</p>`
 	};
-	return transporter.sendMail(mailOptions,  (err, info)=> {err ? err:info;});
-   
+	const data = transporter.sendMail(mailOptions,  (err, info)=> {err ? err:info;});
+   return(data);
 }

@@ -8,12 +8,14 @@ const router = Router();
 
 router.post("/confirmEmail", async(req, res) => {
 	try {
-  
-		const response = await sendEmail(req.body.email);
+   
+		const response = await sendEmail(req.body);
 		res.status(200).json({message: "Email sent successfully", response});
   
 	} catch (error) {
+    // console.log(error);
 		res.status(500).json({
+      
 			message: "An error occurred",
 			error
 		});
