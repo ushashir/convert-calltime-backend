@@ -7,6 +7,7 @@ import { userRequest } from "../types/express";
 
 dotenv.config();
 const key = process.env.AUTH_SECRET as string;
+
 export function generateAccessToken(id: string) {
     const key = process.env.AUTH_SECRET as string;
 	const token = jwt.sign({ user_id: id }, key, {
@@ -31,7 +32,7 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
     const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
 			where: {
-				id: user_id,
+				id: user_id as unknown as number,
 			},
 		});
 

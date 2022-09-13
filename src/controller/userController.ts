@@ -1,6 +1,7 @@
-import { registerUSerSchema } from "../utils/validation";
+import { registerUSerSchema, loginUserSchema } from "../utils/validation";
 import prisma from "../utils/prismaClient";
-import { encryptPassword } from "../utils/hashPassword";
+import { decryptPassword, encryptPassword } from "../utils/hashPassword";
+import { generateAccessToken } from "../utils/authMiddleware"
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -30,7 +31,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: record.userName,
 			email: record.email,
 			phone: record.phone,
-			password: await encryptPassword(record.password)
+			password: await encryptPassword(record.password) as string
 		},
 		select: {
 			firstName: true,
@@ -40,5 +41,29 @@ export async function registerUser(data: Record<string, unknown>) {
 			phone: true
 		}
 	});
+}
+
+export async function loginUser(data: Record<string, unknown>) {
+	//check that information entered by user matches the login schema
+	const isValidData = loginUserSchema.safeParse(data);
+	if(!isValidData.success){
+		throw isValidData.error
+	}
+	const record = isValidData.data;
+
+	const user = await prisma.user.findUnique({
+		where: {
+			email : record.email
+		},
+	});
+	if(!user){
+		throw `No user with ${record.email} found. Please signup`;
+	}
+
+	const match = await decryptPassword(record.password, user.password);
+	if(!match){
+		throw `Incorrect password. Access denied`;
+	}
+	return generateAccessToken(user.id as unknown as string);
 }
 
