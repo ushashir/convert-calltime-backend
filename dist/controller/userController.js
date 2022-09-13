@@ -37,12 +37,12 @@ async function registerUser(data) {
             password: await (0, hashPassword_1.encryptPassword)(record.password)
         },
         select: {
+            id: true,
             firstName: true,
             lastName: true,
             userName: true,
             email: true,
             phone: true,
-            id: true
         }
     });
 }
@@ -64,34 +64,40 @@ async function loginUser(data) {
     }
     const match = await (0, hashPassword_1.decryptPassword)(record.password, user.password);
     if (!match) {
-        throw `Incorrect password. Access denied`;
+        throw "Incorrect password. Access denied";
     }
     return (0, authMiddleware_1.generateAccessToken)(user.id);
 }
 exports.loginUser = loginUser;
 async function updateUser(data, id) {
-    const { firstName, lastName, phone } = data;
     const validData = validation_1.updateUserSchema.safeParse(data);
     if (!validData.success) {
         throw validData.error;
     }
-    const record = await prismaClient_1.default.user.findFirst({ where: { id } });
-    if (!record) {
+    const user = await prismaClient_1.default.user.findFirst({ where: { id } });
+    if (!user) {
         throw "Cannot find user";
     }
+    const record = validData.data;
     return prismaClient_1.default.user.update({
         where: {
             id
         },
         data: {
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone
+            firstName: record.firstName,
+            lastName: record.lastName,
+            phone: record.phone,
+            isVerified: record.isVerified,
+            avatar: record.avatar,
+            userName: record.userName,
+            email: record.email,
+            password: record.password,
         },
         select: {
             firstName: true,
             lastName: true,
-            phone: true
+            phone: true,
+            isVerified: true,
         }
     });
 }

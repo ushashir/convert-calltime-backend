@@ -4,6 +4,10 @@ export const loginUserSchema = z.object({
 	email: z.string().email(),
 	password: z.string()
 });
+export const emailValidation = z.object({
+	email: z.string().email(),
+});
+
 export const registerUSerSchema = z.object({
 	firstName: z.string(),
 	lastName: z.string(),
