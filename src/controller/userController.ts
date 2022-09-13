@@ -1,6 +1,6 @@
 import { registerUSerSchema } from "../utils/validation";
-import prisma from "../utils/prisma_config";
-import bcrypt from "bcrypt";
+import prisma from "../utils/prismaClient";
+import { encryptPassword } from "../utils/hashPassword";
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -9,7 +9,7 @@ export async function registerUser(data: Record<string, unknown>) {
 	}
 	const record = validData.data;
 
-	if (record.password != record.confirmPassword) {
+	if (record.password !== record.confirmPassword) {
 		throw "Password and Confirm password didn't match";
 	}
 	// check for duplicate mail, phone and username
@@ -22,7 +22,6 @@ export async function registerUser(data: Record<string, unknown>) {
 	const duplicateUserName = await prisma.user.findFirst({ where: { userName: record.userName } });
 	if (duplicateUserName) throw "User name already exist";
 
-	const hashPw = await bcrypt.hash(record.password, 8);
 
 	return prisma.user.create({
 		data: {
@@ -31,7 +30,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: record.userName,
 			email: record.email,
 			phone: record.phone,
-			password: hashPw
+			password: await encryptPassword(record.password)
 		},
 		select: {
 			firstName: true,
