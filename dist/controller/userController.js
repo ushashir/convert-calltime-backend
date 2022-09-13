@@ -3,38 +3,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = void 0;
+exports.loginUser = exports.registerUser = void 0;
 const validation_1 = require("../utils/validation");
-const prisma_config_1 = __importDefault(require("../utils/prisma_config"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const prismaClient_1 = __importDefault(require("../utils/prismaClient"));
+const hashPassword_1 = require("../utils/hashPassword");
+const authMiddleware_1 = require("../utils/authMiddleware");
 async function registerUser(data) {
     const validData = validation_1.registerUSerSchema.safeParse(data);
     if (!validData.success) {
         throw validData.error;
     }
     const record = validData.data;
-    if (record.password != record.confirmPassword) {
+    if (record.password !== record.confirmPassword) {
         throw "Password and Confirm password didn't match";
     }
     // check for duplicate mail, phone and username
-    const duplicateMail = await prisma_config_1.default.user.findFirst({ where: { email: record.email } });
+    const duplicateMail = await prismaClient_1.default.user.findFirst({ where: { email: record.email } });
     if (duplicateMail)
         throw "Email already exist";
-    const duplicatePhone = await prisma_config_1.default.user.findFirst({ where: { phone: record.phone } });
+    const duplicatePhone = await prismaClient_1.default.user.findFirst({ where: { phone: record.phone } });
     if (duplicatePhone)
         throw "Phone number already exist";
-    const duplicateUserName = await prisma_config_1.default.user.findFirst({ where: { userName: record.userName } });
+    const duplicateUserName = await prismaClient_1.default.user.findFirst({ where: { userName: record.userName } });
     if (duplicateUserName)
         throw "User name already exist";
-    const hashPw = await bcrypt_1.default.hash(record.password, 8);
-    return prisma_config_1.default.user.create({
+    return prismaClient_1.default.user.create({
         data: {
             firstName: record.firstName,
             lastName: record.lastName,
             userName: record.userName,
             email: record.email,
             phone: record.phone,
-            password: hashPw
+            password: await (0, hashPassword_1.encryptPassword)(record.password)
         },
         select: {
             firstName: true,
@@ -46,4 +46,26 @@ async function registerUser(data) {
     });
 }
 exports.registerUser = registerUser;
+async function loginUser(data) {
+    //check that information entered by user matches the login schema
+    const isValidData = validation_1.loginUserSchema.safeParse(data);
+    if (!isValidData.success) {
+        throw isValidData.error;
+    }
+    const record = isValidData.data;
+    const user = await prismaClient_1.default.user.findUnique({
+        where: {
+            email: record.email
+        },
+    });
+    if (!user) {
+        throw `No user with ${record.email} found. Please signup`;
+    }
+    const match = await (0, hashPassword_1.decryptPassword)(record.password, user.password);
+    if (!match) {
+        throw `Incorrect password. Access denied`;
+    }
+    return (0, authMiddleware_1.generateAccessToken)(user.id);
+}
+exports.loginUser = loginUser;
 //# sourceMappingURL=userController.js.map
