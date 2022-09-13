@@ -34,6 +34,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			password: await encryptPassword(record.password) as string
 		},
 		select: {
+			id: true,
 			firstName: true,
 			lastName: true,
 			userName: true,
@@ -41,6 +42,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			phone: true
 		}
 	});
+	
 }
 
 export async function loginUser(data: Record<string, unknown>) {
