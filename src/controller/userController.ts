@@ -70,6 +70,7 @@ export async function loginUser(data: Record<string, unknown>) {
 
 export async function updateUser(data: Record<string, unknown>, id: number) {
 	const {
+		avatar,
 		firstName,
 		lastName,
 		phone
@@ -91,11 +92,13 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			id
 		},
 		data: {
+			avatar: avatar as string,
 			firstName: firstName as string,
 			lastName: lastName as string,
 			phone: phone as string
 		},
 		select: {
+			avatar: true,
 			firstName: true,
 			lastName: true,
 			phone: true

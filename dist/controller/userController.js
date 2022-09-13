@@ -70,7 +70,7 @@ async function loginUser(data) {
 }
 exports.loginUser = loginUser;
 async function updateUser(data, id) {
-    const { firstName, lastName, phone } = data;
+    const { avatar, firstName, lastName, phone } = data;
     const validData = validation_1.updateUserSchema.safeParse(data);
     if (!validData.success) {
         throw validData.error;
@@ -84,11 +84,13 @@ async function updateUser(data, id) {
             id
         },
         data: {
+            avatar: avatar,
             firstName: firstName,
             lastName: lastName,
             phone: phone
         },
         select: {
+            avatar: true,
             firstName: true,
             lastName: true,
             phone: true
