@@ -7,6 +7,7 @@ import { userRequest } from "../types/express";
 
 dotenv.config();
 const key = process.env.AUTH_SECRET as string;
+
 export function generateAccessToken(id: string) {
 	const key = process.env.AUTH_SECRET as string;
 	const token = jwt.sign({ user_id: id }, key, {
@@ -23,7 +24,7 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 	if (!authorization)
 		return res.status(401).json({ error: "Access Denied, no token Provided" });
 	try {
-	  const token = authorization.slice(7, authorization.length);
+		const token = authorization.slice(7, authorization.length);
 		const decoded = jwt.verify(token, key);
 		if (!decoded) {
 			res.status(401).send("Unauthorized");
@@ -31,14 +32,14 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
 			where: {
-				id: user_id,
+				id: user_id as unknown as number,
 			},
 		});
 
 		if (!user) {
 			res.status(401).send("please register to access our service");
 		}
-	  req.user = decoded;
+		req.user = decoded;
 		next();
 	} catch (error) {
 		res.status(400).send(error);
