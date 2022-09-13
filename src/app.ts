@@ -1,6 +1,5 @@
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
-import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 
@@ -8,12 +7,14 @@ import usersRouter from "./routes/userRoute";
 
 const app = express();
 
+console.log("app running on port 3000");
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/api", usersRouter);
+app.use("/api/users", usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
