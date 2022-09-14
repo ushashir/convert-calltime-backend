@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
         });
     }
 });
-/* Login users */
+/* POST Login users */
 router.post("/login", async (req, res) => {
     try {
         const data = req.body;

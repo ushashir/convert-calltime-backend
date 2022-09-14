@@ -1,9 +1,11 @@
 import z from "zod";
 
 export const loginUserSchema = z.object({
-	email: z.string().email(),
+	email: z.string().email().optional(),
+	userName: z.string().trim().optional(),
 	password: z.string()
 });
+
 export const emailSchema = z.object({
 	email: z.string().email(),
 });

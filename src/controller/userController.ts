@@ -49,21 +49,25 @@ export async function registerUser(data: Record<string, unknown>) {
 
 export async function loginUser(data: Record<string, unknown>) {
 	//check that information entered by user matches the login schema
-	const isValidData = loginUserSchema.safeParse(data);
+	
+		const isValidData = loginUserSchema.safeParse(data);
 
 	if (!isValidData.success) {
 		throw isValidData.error;
 	}
 	const record = isValidData.data;
+	const {email, userName} = isValidData.data
 
-	const user = await prisma.user.findUnique({
-		where: {
-			email: record.email
-		},
-	});
-	if (!user) {
-		throw `No user with ${record.email} found. Please signup`;
+	let user;
+	if(record.email){
+		 user = await prisma.user.findUnique({where: {email: record.email}});
+	}else if(record.userName){
+		 user = await prisma.user.findUnique({where: {userName: record.userName}})
 	}
+	if (!user) {
+		throw `No user with username/email found. Please signup`;
+	};
+
 
 	const match = await decryptPassword(record.password, user.password);
 
@@ -71,8 +75,9 @@ export async function loginUser(data: Record<string, unknown>) {
 		throw "Incorrect password. Access denied";
 	}
 	return generateAccessToken(user.id as unknown as string);
-}
 
+
+}
 export async function updateUser(data: Record<string, unknown>, id: number) {
 	
 	const validData = updateUserSchema.safeParse(data);
@@ -97,8 +102,6 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			phone: record.phone,
 			isVerified: record.isVerified,
 			avatar: record.avatar,
-			userName: record.userName,
-			email: record.email,
 			password: record.password? await encryptPassword(record.password) as string: user.password as string
 		},
 		select: {
