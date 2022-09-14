@@ -57,67 +57,69 @@ export async function registerUser(data: Record<string, unknown>) {
 }
 
 export async function loginUser(data: Record<string, unknown>) {
-  //check that information entered by user matches the login schema
-  const isValidData = loginUserSchema.safeParse(data);
+	//check that information entered by user matches the login schema
+		const isValidData = loginUserSchema.safeParse(data);
 
-  if (!isValidData.success) {
-    throw isValidData.error;
-  }
-  const record = isValidData.data;
+	if (!isValidData.success) {
+		throw isValidData.error;
+	}
+	const record = isValidData.data;
+	const {email, userName} = isValidData.data
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: record.email,
-    },
-  });
-  if (!user) {
-    throw `No user with ${record.email} found. Please signup`;
-  }
+	let user;
+	if(record.email){
+		 user = await prisma.user.findUnique({where: {email: record.email}});
+	}else if(record.userName){
+		 user = await prisma.user.findUnique({where: {userName: record.userName}})
+	}
+	if (!user) {
+		throw `No user with username/email found. Please signup`;
+	};
 
-  const match = await decryptPassword(record.password, user.password);
 
-  if (!match) {
-    throw "Incorrect password. Access denied";
-  }
-  return generateAccessToken(user.id as unknown as string);
+	const match = await decryptPassword(record.password, user.password);
+
+	if (!match) {
+		throw "Incorrect password. Access denied";
+	}
+	return generateAccessToken(user.id as unknown as string);
+
+
 }
-
 export async function updateUser(data: Record<string, unknown>, id: number) {
-  const validData = updateUserSchema.safeParse(data);
-  if (!validData.success) {
-    throw validData.error;
-  }
+	
+	const validData = updateUserSchema.safeParse(data);
+	if (!validData.success) {
+		throw validData.error;
+	}
 
-  const user = await prisma.user.findFirst({ where: { id } });
+	const user = await prisma.user.findFirst({ where: { id } });
 
-  if (!user) {
-    throw "Cannot find user";
-  }
-  const record = validData.data;
+	if (!user) {
+		throw "Cannot find user";
+	}
+	const record = validData.data;
 
-  return prisma.user.update({
-    where: {
-      id,
-    },
-    data: {
-      firstName: record.firstName,
-      lastName: record.lastName,
-      phone: record.phone,
-      isVerified: record.isVerified,
-      avatar: record.avatar,
-      userName: record.userName,
-      email: record.email,
-      password: record.password
-        ? ((await encryptPassword(record.password)) as string)
-        : (user.password as string),
-    },
-    select: {
-      firstName: true,
-      lastName: true,
-      phone: true,
-      isVerified: true,
-    },
-  });
+	return prisma.user.update({
+		where: {
+			id
+		},
+		data: {
+			avatar: record.avatar,
+			firstName: record.firstName,
+			lastName: record.lastName,
+			phone: record.phone,
+			isVerified: record.isVerified,
+			password: record.password? await encryptPassword(record.password) as string: user.password as string
+		},
+		select: {
+			firstName: true,
+			lastName: true,
+			phone: true,
+			isVerified: true,
+		}
+	});
+
 }
 
 export async function forgotPassword(data: Record<string, unknown>) {

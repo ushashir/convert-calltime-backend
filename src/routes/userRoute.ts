@@ -22,7 +22,7 @@ router.get("/verify/:token", async (req, res) => {
 router.post("/confirmation", async (req, res) => {
   try {
     const response = await sendEmail(req.body);
-    res.status(200).json({ message: "Email sent successfully", response });
+    res.status(200).json({ message: "Success", response });
   } catch (error) {
     res.status(500).json({
       message: "An error occurred",
@@ -37,27 +37,28 @@ router.post("/", async (req, res) => {
     const data = req.body;
     const response = await registerUser(data);
     res.status(201).json({
-      msg: "success, new user created",
+      message: "success, new user created",
       response,
     });
   } catch (error) {
     res.status(500).json({
-      msg: error,
+      message: error,
     });
   }
 });
 
-/* Login users */
+
+/* POST Login users */
 router.post("/login", async (req, res) => {
   try {
     const data = req.body;
     const response = await loginUser(data);
     res.status(200).json({
-      msg: "User successfully logged in",
+      message: "User successfully logged in",
       response,
     });
   } catch (error) {
-    res.status(500).json({ msg: error });
+    res.status(500).json({ message: error });
   }
 });
 
@@ -68,12 +69,12 @@ router.patch("/:id", async (req, res) => {
     const { id } = req.params;
     const response = await updateUser(data, Number(id));
     res.status(200).json({
-      msg: "success, user updated",
+      message: "success, user updated",
       response,
     });
   } catch (error) {
     res.status(500).json({
-      msg: error,
+      message: error,
     });
   }
 });
@@ -83,12 +84,12 @@ router.post("/forgotpassword", async (req, res) => {
   try {
     const data = req.body;
     const response = await forgotPassword(data);
-    res.status(201).json({
+    res.status(200).json({
       message: "Check your email to reset your password",
       response,
     });
   } catch (error) {
-    res.status(500).json({ msg: error });
+    res.status(500).json({ message: error });
   }
 });
 

@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.loginUserSchema = zod_1.default.object({
-    email: zod_1.default.string().email(),
+    email: zod_1.default.string().email().optional(),
+    userName: zod_1.default.string().trim().optional(),
     password: zod_1.default.string()
 });
 exports.emailSchema = zod_1.default.object({
