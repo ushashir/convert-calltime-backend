@@ -22,7 +22,7 @@ router.post("/confirmation", async (req, res) => {
     catch (error) {
         res.status(500).json({
             message: "An error occurred",
-            error
+            error,
         });
     }
 });
@@ -33,12 +33,12 @@ router.post("/", async (req, res) => {
         const response = await (0, userController_1.registerUser)(data);
         res.status(201).json({
             msg: "success, new user created",
-            response
+            response,
         });
     }
     catch (error) {
         res.status(500).json({
-            msg: error
+            msg: error,
         });
     }
 });
@@ -49,7 +49,7 @@ router.post("/login", async (req, res) => {
         const response = await (0, userController_1.loginUser)(data);
         res.status(200).json({
             msg: "User successfully logged in",
-            response
+            response,
         });
     }
     catch (error) {
@@ -64,12 +64,12 @@ router.patch("/:id", async (req, res) => {
         const response = await (0, userController_1.updateUser)(data, Number(id));
         res.status(200).json({
             msg: "success, user updated",
-            response
+            response,
         });
     }
     catch (error) {
         res.status(500).json({
-            msg: error
+            msg: error,
         });
     }
 });
@@ -80,7 +80,7 @@ router.post("/forgotpassword", async (req, res) => {
         const response = await (0, userController_1.forgotPassword)(data);
         res.status(201).json({
             message: "Check your email to reset your password",
-            response
+            response,
         });
     }
     catch (error) {
