@@ -20,13 +20,19 @@ async function registerUser(data) {
         throw "Password and Confirm password didn't match";
     }
     // check for duplicate mail, phone and username
-    const duplicateMail = await prismaClient_1.default.user.findFirst({ where: { email: record.email } });
+    const duplicateMail = await prismaClient_1.default.user.findFirst({
+        where: { email: record.email },
+    });
     if (duplicateMail)
         throw "Email already exist";
-    const duplicatePhone = await prismaClient_1.default.user.findFirst({ where: { phone: record.phone } });
+    const duplicatePhone = await prismaClient_1.default.user.findFirst({
+        where: { phone: record.phone },
+    });
     if (duplicatePhone)
         throw "Phone number already exist";
-    const duplicateUserName = await prismaClient_1.default.user.findFirst({ where: { userName: record.userName } });
+    const duplicateUserName = await prismaClient_1.default.user.findFirst({
+        where: { userName: record.userName },
+    });
     if (duplicateUserName)
         throw "User name already exist";
     return prismaClient_1.default.user.create({
@@ -36,7 +42,7 @@ async function registerUser(data) {
             userName: record.userName,
             email: record.email,
             phone: record.phone,
-            password: await (0, hashPassword_1.encryptPassword)(record.password)
+            password: (await (0, hashPassword_1.encryptPassword)(record.password)),
         },
         select: {
             id: true,
@@ -45,7 +51,7 @@ async function registerUser(data) {
             userName: true,
             email: true,
             phone: true,
-        }
+        },
     });
 }
 exports.registerUser = registerUser;
@@ -90,11 +96,11 @@ async function updateUser(data, id) {
             id
         },
         data: {
+            avatar: record.avatar,
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,
             isVerified: record.isVerified,
-            avatar: record.avatar,
             password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
         },
         select: {

@@ -17,12 +17,12 @@ router.get("/verify/:token", async (req, res) => {
 router.post("/confirmation", async (req, res) => {
     try {
         const response = await (0, emailServices_1.sendEmail)(req.body);
-        res.status(200).json({ message: "Email sent successfully", response });
+        res.status(200).json({ message: "Success", response });
     }
     catch (error) {
         res.status(500).json({
             message: "An error occurred",
-            error
+            error,
         });
     }
 });
@@ -32,13 +32,13 @@ router.post("/", async (req, res) => {
         const data = req.body;
         const response = await (0, userController_1.registerUser)(data);
         res.status(201).json({
-            msg: "success, new user created",
-            response
+            message: "success, new user created",
+            response,
         });
     }
     catch (error) {
         res.status(500).json({
-            msg: error
+            message: error,
         });
     }
 });
@@ -48,12 +48,12 @@ router.post("/login", async (req, res) => {
         const data = req.body;
         const response = await (0, userController_1.loginUser)(data);
         res.status(200).json({
-            msg: "User successfully logged in",
-            response
+            message: "User successfully logged in",
+            response,
         });
     }
     catch (error) {
-        res.status(500).json({ msg: error });
+        res.status(500).json({ message: error });
     }
 });
 /* POST update user */
@@ -63,13 +63,13 @@ router.patch("/:id", async (req, res) => {
         const { id } = req.params;
         const response = await (0, userController_1.updateUser)(data, Number(id));
         res.status(200).json({
-            msg: "success, user updated",
-            response
+            message: "success, user updated",
+            response,
         });
     }
     catch (error) {
         res.status(500).json({
-            msg: error
+            message: error,
         });
     }
 });
@@ -78,13 +78,13 @@ router.post("/forgotpassword", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.forgotPassword)(data);
-        res.status(201).json({
+        res.status(200).json({
             message: "Check your email to reset your password",
-            response
+            response,
         });
     }
     catch (error) {
-        res.status(500).json({ msg: error });
+        res.status(500).json({ message: error });
     }
 });
 router.get("/resetpassword/:token", (req, res) => {
