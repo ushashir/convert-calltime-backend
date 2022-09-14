@@ -46,6 +46,7 @@ export async function registerUser(data: Record<string, unknown>) {
 
 export async function loginUser(data: Record<string, unknown>) {
 	//check that information entered by user matches the login schema
+	
 	const isValidData = loginUserSchema.safeParse(data);
 
 	if (!isValidData.success) {
@@ -53,14 +54,16 @@ export async function loginUser(data: Record<string, unknown>) {
 	}
 	const record = isValidData.data;
 
-	const user = await prisma.user.findUnique({
-		where: {
-			email: record.email
-		},
-	});
-	if (!user) {
-		throw `No user with ${record.email} found. Please signup`;
+	let user;
+	if(record.email){
+		user = await prisma.user.findUnique({where: {email: record.email}});
+	}else if(record.userName){
+		user = await prisma.user.findUnique({where: {userName: record.userName}});
 	}
+	if (!user) {
+		throw "No user with username/email found. Please signup";
+	}
+
 
 	const match = await decryptPassword(record.password, user.password);
 
@@ -69,7 +72,6 @@ export async function loginUser(data: Record<string, unknown>) {
 	}
 	return generateAccessToken(user.id as unknown as string);
 }
-
 export async function updateUser(data: Record<string, unknown>, id: number) {
 	const validData = updateUserSchema.safeParse(data);
 	if (!validData.success) {
@@ -92,6 +94,8 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
+			isVerified: record.isVerified,
+			password: record.password? await encryptPassword(record.password) as string: user.password as string
 		},
 		select: {
 			avatar: true,
@@ -104,14 +108,14 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 }
 
 export async function forgotPassword(data:Record<string, unknown>) {
-	const validData = emailSchema.safeParse(data)
+	const validData = emailSchema.safeParse(data);
 	if (!validData.success) throw validData.error;
-	const email = validData.data.email
-	const user = await prisma.user.findUnique({ where: { email } })
+	const email = validData.data.email;
+	const user = await prisma.user.findUnique({ where: { email } });
 	if (!user) throw "User does not exist";
 	
 	const response = emailServices(user, "resetpassword");
-	return response
+	return response;
 }
 
 export async function resetPassword(token:string, newPassword: string) {

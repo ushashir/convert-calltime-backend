@@ -54,13 +54,15 @@ async function loginUser(data) {
         throw isValidData.error;
     }
     const record = isValidData.data;
-    const user = await prismaClient_1.default.user.findUnique({
-        where: {
-            email: record.email
-        },
-    });
+    let user;
+    if (record.email) {
+        user = await prismaClient_1.default.user.findUnique({ where: { email: record.email } });
+    }
+    else if (record.userName) {
+        user = await prismaClient_1.default.user.findUnique({ where: { userName: record.userName } });
+    }
     if (!user) {
-        throw `No user with ${record.email} found. Please signup`;
+        throw "No user with username/email found. Please signup";
     }
     const match = await (0, hashPassword_1.decryptPassword)(record.password, user.password);
     if (!match) {
@@ -88,6 +90,8 @@ async function updateUser(data, id) {
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,
+            isVerified: record.isVerified,
+            password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
         },
         select: {
             avatar: true,
