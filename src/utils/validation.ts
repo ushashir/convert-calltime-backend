@@ -4,7 +4,6 @@ export const loginUserSchema = z.object({
 	email: z.string().email(),
 	password: z.string()
 });
-
 export const emailSchema = z.object({
 	email: z.string().email(),
 });
