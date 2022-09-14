@@ -48,12 +48,12 @@ router.post("/", async (req, res) => {
 });
 
 
-/* Login users */
+/* POST Login users */
 router.post("/login", async (req, res) => {
 	try {
 		const data = req.body;
 		const response = await loginUser(data);
-		res.status(201).json({
+		res.status(200).json({
 			msg: "User successfully logged in",
 			response
 		});

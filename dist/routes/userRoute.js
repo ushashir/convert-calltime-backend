@@ -20,7 +20,6 @@ router.post("/confirmation", async (req, res) => {
         res.status(200).json({ message: "Email sent successfully", response });
     }
     catch (error) {
-        // console.log(error);
         res.status(500).json({
             message: "An error occurred",
             error
@@ -43,12 +42,12 @@ router.post("/", async (req, res) => {
         });
     }
 });
-/* Login users */
+/* POST Login users */
 router.post("/login", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.loginUser)(data);
-        res.status(201).json({
+        res.status(200).json({
             msg: "User successfully logged in",
             response
         });
