@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import prisma from "../utils/prismaClient";
-import {emailValidation} from "../utils/validation";
+import {emailSchema} from "../utils/validation";
 import { emailServices } from "../utils/emailService";
 import jwt from "jsonwebtoken";
 import { updateUser } from "./userController";
@@ -9,14 +9,14 @@ dotenv.config();
 
 export async function sendEmail(email:Record<string, unknown>) {
    
-	const isValidData = emailValidation.safeParse(email);
+	const isValidData = emailSchema.safeParse(email);
 	if(!isValidData.success) throw isValidData.error;
 	const record = isValidData.data.email;
 
 	const userData = await prisma.user.findUnique({where: {email:record}});
-	if(!userData) throw userData;
+	if(!userData) throw `user with ${record} does not exist`;
 
-	const response = await emailServices(userData);
+	const response = await emailServices(userData,"verify");
 	return response;
 
 }

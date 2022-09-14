@@ -20,7 +20,6 @@ router.post("/confirmation", async (req, res) => {
         res.status(200).json({ message: "Email sent successfully", response });
     }
     catch (error) {
-        // console.log(error);
         res.status(500).json({
             message: "An error occurred",
             error
@@ -48,7 +47,7 @@ router.post("/login", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.loginUser)(data);
-        res.status(201).json({
+        res.status(200).json({
             msg: "User successfully logged in",
             response
         });
@@ -72,6 +71,40 @@ router.patch("/:id", async (req, res) => {
         res.status(500).json({
             msg: error
         });
+    }
+});
+/*POST forgot password */
+router.post("/forgotpassword", async (req, res) => {
+    try {
+        const data = req.body;
+        const response = await (0, userController_1.forgotPassword)(data);
+        res.status(201).json({
+            message: "Check your email to reset your password",
+            response
+        });
+    }
+    catch (error) {
+        res.status(500).json({ msg: error });
+    }
+});
+router.get("/resetpassword/:token", (req, res) => {
+    const token = req.params.token;
+    res.send(`<form method="POST" action="/api/users/resetpassword">
+		<input type="hidden" value=${token} name="token">
+		<input type="password" name="password" placeholder="Enter new password"/>
+		<input type="submit" name="submit" value="Change password" />
+		</form>
+	`);
+});
+router.post("/resetpassword", async (req, res) => {
+    const token = req.body.token;
+    const newPassword = req.body.password;
+    try {
+        await (0, userController_1.resetPassword)(token, newPassword);
+        res.status(200).json({ message: "Password Reset successful" });
+    }
+    catch (error) {
+        res.status(500).json(error);
     }
 });
 exports.default = router;
