@@ -1,6 +1,7 @@
-import { registerUSerSchema } from "../utils/validation";
-import prisma from "../utils/prisma_config";
-import bcrypt from "bcrypt";
+import { registerUSerSchema, loginUserSchema, updateUserSchema } from "../utils/validation";
+import prisma from "../utils/prismaClient";
+import { decryptPassword, encryptPassword } from "../utils/hashPassword";
+import { generateAccessToken } from "../utils/authMiddleware";
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -9,7 +10,7 @@ export async function registerUser(data: Record<string, unknown>) {
 	}
 	const record = validData.data;
 
-	if (record.password != record.confirmPassword) {
+	if (record.password !== record.confirmPassword) {
 		throw "Password and Confirm password didn't match";
 	}
 	// check for duplicate mail, phone and username
@@ -22,7 +23,6 @@ export async function registerUser(data: Record<string, unknown>) {
 	const duplicateUserName = await prisma.user.findFirst({ where: { userName: record.userName } });
 	if (duplicateUserName) throw "User name already exist";
 
-	const hashPw = await bcrypt.hash(record.password, 8);
 
 	return prisma.user.create({
 		data: {
@@ -31,15 +31,81 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: record.userName,
 			email: record.email,
 			phone: record.phone,
-			password: hashPw
+			password: await encryptPassword(record.password) as string
 		},
 		select: {
+			id: true,
 			firstName: true,
 			lastName: true,
 			userName: true,
 			email: true,
-			phone: true
+			phone: true,
 		}
 	});
+	
 }
 
+export async function loginUser(data: Record<string, unknown>) {
+	//check that information entered by user matches the login schema
+	const isValidData = loginUserSchema.safeParse(data);
+
+	if (!isValidData.success) {
+		throw isValidData.error;
+	}
+	const record = isValidData.data;
+
+	const user = await prisma.user.findUnique({
+		where: {
+			email: record.email
+		},
+	});
+	if (!user) {
+		throw `No user with ${record.email} found. Please signup`;
+	}
+
+	const match = await decryptPassword(record.password, user.password);
+
+	if (!match) {
+		throw "Incorrect password. Access denied";
+	}
+	return generateAccessToken(user.id as unknown as string);
+}
+
+export async function updateUser(data: Record<string, unknown>, id: number) {
+	
+	const validData = updateUserSchema.safeParse(data);
+	if (!validData.success) {
+		throw validData.error;
+	}
+
+	const user = await prisma.user.findFirst({ where: { id } });
+
+	if (!user) {
+		throw "Cannot find user";
+	}
+	const record = validData.data;
+	return prisma.user.update({
+		where: {
+			id
+		},
+		data: {
+			firstName: record.firstName,
+			lastName: record.lastName,
+			phone: record.phone,
+			isVerified: record.isVerified,
+			avatar: record.avatar,
+			userName: record.userName,
+			email: record.email,
+			password: record.password,
+	
+			
+		},
+		select: {
+			firstName: true,
+			lastName: true,
+			phone: true,
+			isVerified: true,
+		}
+	});
+
+}
