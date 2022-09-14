@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserSchema = exports.registerUSerSchema = exports.emailValidation = exports.loginUserSchema = void 0;
+exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.loginUserSchema = zod_1.default.object({
     email: zod_1.default.string().email(),
     password: zod_1.default.string()
 });
-exports.emailValidation = zod_1.default.object({
+exports.emailSchema = zod_1.default.object({
     email: zod_1.default.string().email(),
 });
 exports.registerUSerSchema = zod_1.default.object({
@@ -22,6 +22,13 @@ exports.registerUSerSchema = zod_1.default.object({
     confirmPassword: zod_1.default.string().min(4),
     avatar: zod_1.default.string().optional(),
     isVerified: zod_1.default.boolean().optional()
+}).superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Password did not match confirm password"
+        });
+    }
 });
 exports.updateUserSchema = zod_1.default.object({
     firstName: zod_1.default.string().optional(),

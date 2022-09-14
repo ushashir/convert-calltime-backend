@@ -1,7 +1,9 @@
-import { registerUSerSchema, loginUserSchema, updateUserSchema } from "../utils/validation";
+import { registerUSerSchema, loginUserSchema, updateUserSchema, emailSchema } from "../utils/validation";
 import prisma from "../utils/prismaClient";
+import jwt from "jsonwebtoken";
 import { decryptPassword, encryptPassword } from "../utils/hashPassword";
 import { generateAccessToken } from "../utils/authMiddleware";
+import { emailServices } from "../utils/emailService";
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -10,9 +12,6 @@ export async function registerUser(data: Record<string, unknown>) {
 	}
 	const record = validData.data;
 
-	if (record.password !== record.confirmPassword) {
-		throw "Password and Confirm password didn't match";
-	}
 	// check for duplicate mail, phone and username
 	const duplicateMail = await prisma.user.findFirst({ where: { email: record.email } });
 	if (duplicateMail) throw "Email already exist";
@@ -22,7 +21,6 @@ export async function registerUser(data: Record<string, unknown>) {
 
 	const duplicateUserName = await prisma.user.findFirst({ where: { userName: record.userName } });
 	if (duplicateUserName) throw "User name already exist";
-
 
 	return prisma.user.create({
 		data: {
@@ -40,6 +38,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: true,
 			email: true,
 			phone: true,
+			password: true
 		}
 	});
 	
@@ -72,7 +71,6 @@ export async function loginUser(data: Record<string, unknown>) {
 }
 
 export async function updateUser(data: Record<string, unknown>, id: number) {
-	
 	const validData = updateUserSchema.safeParse(data);
 	if (!validData.success) {
 		throw validData.error;
@@ -84,6 +82,7 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 		throw "Cannot find user";
 	}
 	const record = validData.data;
+
 	return prisma.user.update({
 		where: {
 			id
@@ -96,16 +95,37 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			avatar: record.avatar,
 			userName: record.userName,
 			email: record.email,
-			password: record.password,
-	
-			
+			password: record.password? await encryptPassword(record.password) as string: user.password as string
 		},
 		select: {
 			firstName: true,
 			lastName: true,
 			phone: true,
 			isVerified: true,
+			avatar: true,
+			userName: true,
+			email: true,
+			password: true
 		}
 	});
 
+}
+
+export async function forgotPassword(data:Record<string, unknown>) {
+	const validData = emailSchema.safeParse(data)
+	if (!validData.success) throw validData.error;
+	const email = validData.data.email
+	const user = await prisma.user.findUnique({ where: { email } })
+	if (!user) throw "User does not exist";
+	
+	const response = emailServices(user, "resetpassword");
+	return response
+}
+
+export async function resetPassword(token:string, newPassword: string) {
+	const decoded = jwt.verify(token, process.env.AUTH_SECRET as string);
+	const id = decoded as unknown as Record<string, number>;
+	const user = await prisma.user.findUnique({where: {id: id.user_id}});
+	if(!user) throw "user not found";
+	await updateUser({password: newPassword}, user.id);	
 }
