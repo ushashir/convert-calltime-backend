@@ -4,8 +4,6 @@ import jwt from "jsonwebtoken";
 import { decryptPassword, encryptPassword } from "../utils/hashPassword";
 import { generateAccessToken } from "../utils/authMiddleware";
 import { emailServices } from "../utils/emailService";
-import { v2 as cloudinary } from "cloudinary";
-import { cloudinaryConfig } from "../config/cloudinary.config";
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -85,36 +83,21 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 	}
 	const record = validData.data;
 
-	// const updateUrl = "https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg";
-	// cloudinary.uploader.upload(updateUrl,
-	// 	{ public_id: "olympic_flag" }, 
-	// 	function (error, result) { console.log(result); });
-	
-	cloudinaryConfig.uploader()
-
 	return prisma.user.update({
 		where: {
 			id
 		},
 		data: {
+			avatar: record.avatar,
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
-			isVerified: record.isVerified,
-			avatar: record.avatar,
-			userName: record.userName,
-			email: record.email,
-			password: record.password? await encryptPassword(record.password) as string: user.password as string
 		},
 		select: {
+			avatar: true,
 			firstName: true,
 			lastName: true,
-			phone: true,
-			isVerified: true,
-			avatar: true,
-			userName: true,
-			email: true,
-			password: true
+			phone: true
 		}
 	});
 

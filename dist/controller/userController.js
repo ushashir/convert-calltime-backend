@@ -10,7 +10,6 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const hashPassword_1 = require("../utils/hashPassword");
 const authMiddleware_1 = require("../utils/authMiddleware");
 const emailService_1 = require("../utils/emailService");
-const cloudinary_config_1 = require("../config/cloudinary.config");
 async function registerUser(data) {
     const validData = validation_1.registerUSerSchema.safeParse(data);
     if (!validData.success) {
@@ -80,34 +79,21 @@ async function updateUser(data, id) {
         throw "Cannot find user";
     }
     const record = validData.data;
-    // const updateUrl = "https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg";
-    // cloudinary.uploader.upload(updateUrl,
-    // 	{ public_id: "olympic_flag" }, 
-    // 	function (error, result) { console.log(result); });
-    cloudinary_config_1.cloudinaryConfig.uploader();
     return prismaClient_1.default.user.update({
         where: {
             id
         },
         data: {
+            avatar: record.avatar,
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,
-            isVerified: record.isVerified,
-            avatar: record.avatar,
-            userName: record.userName,
-            email: record.email,
-            password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
         },
         select: {
+            avatar: true,
             firstName: true,
             lastName: true,
-            phone: true,
-            isVerified: true,
-            avatar: true,
-            userName: true,
-            email: true,
-            password: true
+            phone: true
         }
     });
 }
