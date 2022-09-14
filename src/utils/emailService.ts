@@ -10,7 +10,7 @@ export async function emailServices(data: Record<string, unknown>, route: string
  
 	const {email, id, userName, password} = data;
 
-	const token = jwt.sign({ user_id: id }, process.env.AUTH_SECRET as string + password, {expiresIn: "1h"});
+	const token = jwt.sign({ user_id: id }, process.env.AUTH_SECRET as string + password, {expiresIn: "30m"});
 
   const link = `${process.env.BASE_URL}/api/users/${route}/${token}`;
 
