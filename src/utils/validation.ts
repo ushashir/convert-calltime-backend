@@ -6,7 +6,7 @@ export const loginUserSchema = z.object({
 	password: z.string()
 });
 
-export const emailValidation = z.object({
+export const emailSchema = z.object({
 	email: z.string().email(),
 });
 

@@ -2,19 +2,18 @@ import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
-
 dotenv.config();
 
 
 
-export async function emailServices(data: Record<string, unknown>) {
-	const {email, id, username} = data;
+export async function emailServices(data: Record<string, unknown>, route: string) {
+ 
+	const {email, id, userName, password} = data;
 
-	const token = jwt.sign({ user_id: id }, process.env.AUTH_SECRET as string, {
-		expiresIn: "1h",
-	});
+	const token = jwt.sign({ user_id: id }, process.env.AUTH_SECRET as string + password, {expiresIn: "30m"});
 
-	const link = `${process.env.BASE_URL}/api/users/verify/${token}`;
+  const link = `${process.env.BASE_URL}/api/users/${route}/${token}`;
+
 	const emailTemplate = `
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -168,7 +167,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:0px 100px 20px;font-family:'Montserrat',sans-serif;" align="left">
         
   <div class="v-color" style="color: #ffffff; line-height: 160%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 160%;">Hello, thanks for choosing us. Kindly follow the link to complete your registration</p>
+    <p style="font-size: 14px; line-height: 160%;">Hello ${userName}, thanks for choosing us. Kindly follow the link to complete your registration</p>
   </div>
 
       </td>
@@ -277,7 +276,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 	});
 	const mailOptions = {
 		from: process.env.EMAIL_USER,
-		username: username,
+		username: userName,
 		to: email as string,
 		subject: "User Verification: Airtime to Cash",
 		html: emailTemplate
