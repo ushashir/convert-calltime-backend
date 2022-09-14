@@ -50,6 +50,7 @@
     "@types/node": "^18.7.16",
     "@types/typescript": "^2.0.0",
     "@types/uuid": "^8.3.4",
+    "cloudinary": "^1.32.0",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
     "onchange": "^7.1.0",

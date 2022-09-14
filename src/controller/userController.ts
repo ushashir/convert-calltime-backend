@@ -2,6 +2,7 @@ import { registerUSerSchema, loginUserSchema, updateUserSchema } from "../utils/
 import prisma from "../utils/prismaClient";
 import { decryptPassword, encryptPassword } from "../utils/hashPassword";
 import { generateAccessToken } from "../utils/authMiddleware"
+import cloudinary from "../utils/cloudinary";
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -69,33 +70,38 @@ export async function loginUser(data: Record<string, unknown>) {
 }
 
 export async function updateUser(data: Record<string, unknown>, id: number) {
-	const {
-		avatar,
-		firstName,
-		lastName,
-		phone
-	} = data
-
 	const validData = updateUserSchema.safeParse(data);
 	if (!validData.success) {
 		throw validData.error;
 	}
-
-	const record = await prisma.user.findFirst({ where: { id } })
-
-	if (!record) {
+	const user = await prisma.user.findFirst({ where: { id } })
+	if (!user) {
 		throw "Cannot find user"
 	}
+	console.log('@userController 81:=')
+	const avatar = data.avatar as string
 
+	console.log('@userController 84:=', avatar)
+	let uploadedResponse;
+	if (avatar) {
+		uploadedResponse = await cloudinary.uploader.upload(avatar, {
+			allowed_formats: ['jpg', 'png', "svg", "jpeg"],
+			folder: "live-project"
+		})
+
+		if (!uploadedResponse) throw Error
+	}
+
+	const record = validData.data;
 	return prisma.user.update({
 		where: {
 			id
 		},
 		data: {
-			avatar: avatar as string,
-			firstName: firstName as string,
-			lastName: lastName as string,
-			phone: phone as string
+			avatar: uploadedResponse ? uploadedResponse.url : null,
+			firstName: record.firstName,
+			lastName: record.lastName,
+			phone: record.phone
 		},
 		select: {
 			avatar: true,

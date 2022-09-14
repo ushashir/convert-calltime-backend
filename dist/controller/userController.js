@@ -8,6 +8,7 @@ const validation_1 = require("../utils/validation");
 const prismaClient_1 = __importDefault(require("../utils/prismaClient"));
 const hashPassword_1 = require("../utils/hashPassword");
 const authMiddleware_1 = require("../utils/authMiddleware");
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 async function registerUser(data) {
     const validData = validation_1.registerUSerSchema.safeParse(data);
     if (!validData.success) {
@@ -70,24 +71,36 @@ async function loginUser(data) {
 }
 exports.loginUser = loginUser;
 async function updateUser(data, id) {
-    const { avatar, firstName, lastName, phone } = data;
     const validData = validation_1.updateUserSchema.safeParse(data);
     if (!validData.success) {
         throw validData.error;
     }
-    const record = await prismaClient_1.default.user.findFirst({ where: { id } });
-    if (!record) {
+    const user = await prismaClient_1.default.user.findFirst({ where: { id } });
+    if (!user) {
         throw "Cannot find user";
     }
+    console.log('@userController 81:=');
+    const avatar = data.avatar;
+    console.log('@userController 84:=', avatar);
+    let uploadedResponse;
+    if (avatar) {
+        uploadedResponse = await cloudinary_1.default.uploader.upload(avatar, {
+            allowed_formats: ['jpg', 'png', "svg", "jpeg"],
+            folder: "live-project"
+        });
+        if (!uploadedResponse)
+            throw Error;
+    }
+    const record = validData.data;
     return prismaClient_1.default.user.update({
         where: {
             id
         },
         data: {
-            avatar: avatar,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone
+            avatar: uploadedResponse ? uploadedResponse.url : null,
+            firstName: record.firstName,
+            lastName: record.lastName,
+            phone: record.phone
         },
         select: {
             avatar: true,
