@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import app from "../app";
 import db from "../utils/prismaClient";
-import "dotenv/config";
 
 const request =  supertest(app);
 
