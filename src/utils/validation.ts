@@ -20,6 +20,13 @@ export const registerUSerSchema = z.object({
 	confirmPassword: z.string().min(4),
 	avatar: z.string().optional(),
 	isVerified: z.boolean().optional()
+}).superRefine(({ confirmPassword, password }, ctx) => {
+	if (confirmPassword !== password) {
+		ctx.addIssue({
+			code: "custom",
+			message: "Password did not match confirm password"
+		});
+	}
 });
 
 export const updateUserSchema = z.object({

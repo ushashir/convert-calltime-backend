@@ -2,6 +2,7 @@ import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import bodyParser from "body-parser";
 
 import usersRouter from "./routes/userRoute";
 
