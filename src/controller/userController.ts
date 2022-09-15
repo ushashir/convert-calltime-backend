@@ -7,6 +7,7 @@ import {
 import prisma from "../utils/prismaClient";
 import jwt from "jsonwebtoken";
 import { decryptPassword, encryptPassword } from "../utils/hashPassword";
+import cloudinary from "../utils/cloudinary";
 import { generateAccessToken } from "../utils/authMiddleware";
 import { emailServices } from "../utils/emailService";
 
@@ -53,7 +54,7 @@ export async function registerUser(data: Record<string, unknown>) {
 
 export async function loginUser(data: Record<string, unknown>) {
 	//check that information entered by user matches the login schema
-	
+
 	const isValidData = loginUserSchema.safeParse(data);
 
 	if (!isValidData.success) {
@@ -62,10 +63,10 @@ export async function loginUser(data: Record<string, unknown>) {
 	const record = isValidData.data;
 
 	let user;
-	if(record.email){
-		user = await prisma.user.findUnique({where: {email: record.email}});
-	}else if(record.userName){
-		user = await prisma.user.findUnique({where: {userName: record.userName}});
+	if (record.email) {
+		user = await prisma.user.findUnique({ where: { email: record.email } });
+	} else if (record.userName) {
+		user = await prisma.user.findUnique({ where: { userName: record.userName } });
 	}
 	if (!user) {
 		throw "No user with username/email found. Please signup";
@@ -79,30 +80,40 @@ export async function loginUser(data: Record<string, unknown>) {
 	}
 	return generateAccessToken(user.id as unknown as string);
 }
+
 export async function updateUser(data: Record<string, unknown>, id: number) {
 	const validData = updateUserSchema.safeParse(data);
 	if (!validData.success) {
 		throw validData.error;
 	}
-
-	const user = await prisma.user.findFirst({ where: { id } });
-
+	const user = await prisma.user.findFirst({ where: { id } })
 	if (!user) {
-		throw "Cannot find user";
+		throw "Cannot find user"
 	}
-	const record = validData.data;
 
+	const avatar = data.avatar as string
+
+	let uploadedResponse;
+	if (avatar) {
+		uploadedResponse = await cloudinary.uploader.upload(avatar, {
+			allowed_formats: ['jpg', 'png', "svg", "jpeg"],
+			folder: "live-project"
+		})
+
+		if (!uploadedResponse) throw Error
+	}
+
+	const record = validData.data;
 	return prisma.user.update({
 		where: {
 			id
 		},
 		data: {
-			avatar: record.avatar,
+			avatar: uploadedResponse ? uploadedResponse.url : null,
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
-			isVerified: record.isVerified,
-			password: record.password? await encryptPassword(record.password) as string: user.password as string
+			password: record.password ? await encryptPassword(record.password) as string : user.password as string
 		},
 		select: {
 			avatar: true,

@@ -8,6 +8,7 @@ const validation_1 = require("../utils/validation");
 const prismaClient_1 = __importDefault(require("../utils/prismaClient"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const hashPassword_1 = require("../utils/hashPassword");
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const authMiddleware_1 = require("../utils/authMiddleware");
 const emailService_1 = require("../utils/emailService");
 async function registerUser(data) {
@@ -83,17 +84,26 @@ async function updateUser(data, id) {
     if (!user) {
         throw "Cannot find user";
     }
+    const avatar = data.avatar;
+    let uploadedResponse;
+    if (avatar) {
+        uploadedResponse = await cloudinary_1.default.uploader.upload(avatar, {
+            allowed_formats: ['jpg', 'png', "svg", "jpeg"],
+            folder: "live-project"
+        });
+        if (!uploadedResponse)
+            throw Error;
+    }
     const record = validData.data;
     return prismaClient_1.default.user.update({
         where: {
             id
         },
         data: {
-            avatar: record.avatar,
+            avatar: uploadedResponse ? uploadedResponse.url : null,
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,
-            isVerified: record.isVerified,
             password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
         },
         select: {
