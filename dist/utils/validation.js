@@ -23,6 +23,13 @@ exports.registerUSerSchema = zod_1.default.object({
     confirmPassword: zod_1.default.string().min(4),
     avatar: zod_1.default.string().optional(),
     isVerified: zod_1.default.boolean().optional()
+}).superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Password did not match confirm password"
+        });
+    }
 });
 exports.updateUserSchema = zod_1.default.object({
     firstName: zod_1.default.string().optional(),

@@ -17,13 +17,8 @@ async function registerUser(data) {
         throw validData.error;
     }
     const record = validData.data;
-    if (record.password !== record.confirmPassword) {
-        throw "Password and Confirm password didn't match";
-    }
     // check for duplicate mail, phone and username
-    const duplicateMail = await prismaClient_1.default.user.findFirst({
-        where: { email: record.email },
-    });
+    const duplicateMail = await prismaClient_1.default.user.findFirst({ where: { email: record.email } });
     if (duplicateMail)
         throw "Email already exist";
     const duplicatePhone = await prismaClient_1.default.user.findFirst({
@@ -63,7 +58,6 @@ async function loginUser(data) {
         throw isValidData.error;
     }
     const record = isValidData.data;
-    const { email, userName } = isValidData.data;
     let user;
     if (record.email) {
         user = await prismaClient_1.default.user.findUnique({ where: { email: record.email } });
@@ -72,9 +66,8 @@ async function loginUser(data) {
         user = await prismaClient_1.default.user.findUnique({ where: { userName: record.userName } });
     }
     if (!user) {
-        throw `No user with username/email found. Please signup`;
+        throw "No user with username/email found. Please signup";
     }
-    ;
     const match = await (0, hashPassword_1.decryptPassword)(record.password, user.password);
     if (!match) {
         throw "Incorrect password. Access denied";
@@ -117,8 +110,7 @@ async function updateUser(data, id) {
             avatar: true,
             firstName: true,
             lastName: true,
-            phone: true,
-            isVerified: true,
+            phone: true
         }
     });
 }

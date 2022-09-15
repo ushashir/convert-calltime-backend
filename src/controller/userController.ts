@@ -18,13 +18,8 @@ export async function registerUser(data: Record<string, unknown>) {
 	}
 	const record = validData.data;
 
-	if (record.password !== record.confirmPassword) {
-		throw "Password and Confirm password didn't match";
-	}
 	// check for duplicate mail, phone and username
-	const duplicateMail = await prisma.user.findFirst({
-		where: { email: record.email },
-	});
+	const duplicateMail = await prisma.user.findFirst({ where: { email: record.email } });
 	if (duplicateMail) throw "Email already exist";
 
 	const duplicatePhone = await prisma.user.findFirst({
@@ -59,23 +54,23 @@ export async function registerUser(data: Record<string, unknown>) {
 
 export async function loginUser(data: Record<string, unknown>) {
 	//check that information entered by user matches the login schema
+
 	const isValidData = loginUserSchema.safeParse(data);
 
 	if (!isValidData.success) {
 		throw isValidData.error;
 	}
 	const record = isValidData.data;
-	const { email, userName } = isValidData.data
 
 	let user;
 	if (record.email) {
 		user = await prisma.user.findUnique({ where: { email: record.email } });
 	} else if (record.userName) {
-		user = await prisma.user.findUnique({ where: { userName: record.userName } })
+		user = await prisma.user.findUnique({ where: { userName: record.userName } });
 	}
 	if (!user) {
-		throw `No user with username/email found. Please signup`;
-	};
+		throw "No user with username/email found. Please signup";
+	}
 
 
 	const match = await decryptPassword(record.password, user.password);
@@ -124,8 +119,7 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			avatar: true,
 			firstName: true,
 			lastName: true,
-			phone: true,
-			isVerified: true,
+			phone: true
 		}
 	});
 
