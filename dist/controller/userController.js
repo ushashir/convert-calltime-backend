@@ -20,10 +20,14 @@ async function registerUser(data) {
     const duplicateMail = await prismaClient_1.default.user.findFirst({ where: { email: record.email } });
     if (duplicateMail)
         throw "Email already exist";
-    const duplicatePhone = await prismaClient_1.default.user.findFirst({ where: { phone: record.phone } });
+    const duplicatePhone = await prismaClient_1.default.user.findFirst({
+        where: { phone: record.phone },
+    });
     if (duplicatePhone)
         throw "Phone number already exist";
-    const duplicateUserName = await prismaClient_1.default.user.findFirst({ where: { userName: record.userName } });
+    const duplicateUserName = await prismaClient_1.default.user.findFirst({
+        where: { userName: record.userName },
+    });
     if (duplicateUserName)
         throw "User name already exist";
     return prismaClient_1.default.user.create({
@@ -33,7 +37,7 @@ async function registerUser(data) {
             userName: record.userName,
             email: record.email,
             phone: record.phone,
-            password: await (0, hashPassword_1.encryptPassword)(record.password)
+            password: (await (0, hashPassword_1.encryptPassword)(record.password)),
         },
         select: {
             id: true,
@@ -42,8 +46,7 @@ async function registerUser(data) {
             userName: true,
             email: true,
             phone: true,
-            password: true
-        }
+        },
     });
 }
 exports.registerUser = registerUser;

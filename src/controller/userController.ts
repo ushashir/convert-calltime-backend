@@ -1,4 +1,9 @@
-import { registerUSerSchema, loginUserSchema, updateUserSchema, emailSchema } from "../utils/validation";
+import {
+	registerUSerSchema,
+	loginUserSchema,
+	updateUserSchema,
+	emailSchema,
+} from "../utils/validation";
 import prisma from "../utils/prismaClient";
 import jwt from "jsonwebtoken";
 import { decryptPassword, encryptPassword } from "../utils/hashPassword";
@@ -16,10 +21,14 @@ export async function registerUser(data: Record<string, unknown>) {
 	const duplicateMail = await prisma.user.findFirst({ where: { email: record.email } });
 	if (duplicateMail) throw "Email already exist";
 
-	const duplicatePhone = await prisma.user.findFirst({ where: { phone: record.phone } });
+	const duplicatePhone = await prisma.user.findFirst({
+		where: { phone: record.phone },
+	});
 	if (duplicatePhone) throw "Phone number already exist";
 
-	const duplicateUserName = await prisma.user.findFirst({ where: { userName: record.userName } });
+	const duplicateUserName = await prisma.user.findFirst({
+		where: { userName: record.userName },
+	});
 	if (duplicateUserName) throw "User name already exist";
 
 	return prisma.user.create({
@@ -29,7 +38,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: record.userName,
 			email: record.email,
 			phone: record.phone,
-			password: await encryptPassword(record.password) as string
+			password: (await encryptPassword(record.password)) as string,
 		},
 		select: {
 			id: true,
@@ -38,10 +47,8 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: true,
 			email: true,
 			phone: true,
-			password: true
-		}
+		},
 	});
-	
 }
 
 export async function loginUser(data: Record<string, unknown>) {
@@ -107,21 +114,21 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 
 }
 
-export async function forgotPassword(data:Record<string, unknown>) {
+export async function forgotPassword(data: Record<string, unknown>) {
 	const validData = emailSchema.safeParse(data);
 	if (!validData.success) throw validData.error;
 	const email = validData.data.email;
 	const user = await prisma.user.findUnique({ where: { email } });
 	if (!user) throw "User does not exist";
-	
+
 	const response = emailServices(user, "resetpassword");
 	return response;
 }
 
-export async function resetPassword(token:string, newPassword: string) {
+export async function resetPassword(token: string, newPassword: string) {
 	const decoded = jwt.verify(token, process.env.AUTH_SECRET as string);
 	const id = decoded as unknown as Record<string, number>;
-	const user = await prisma.user.findUnique({where: {id: id.user_id}});
-	if(!user) throw "user not found";
-	await updateUser({password: newPassword}, user.id);	
+	const user = await prisma.user.findUnique({ where: { id: id.user_id } });
+	if (!user) throw "user not found";
+	await updateUser({ password: newPassword }, user.id);
 }

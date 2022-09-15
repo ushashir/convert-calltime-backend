@@ -278,11 +278,10 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 		from: process.env.EMAIL_USER,
 		username: userName,
 		to: email as string,
-		subject: "User Verification: Airtime to Cash",
+		subject: "Airtime to Cash",
 		html: emailTemplate
 
 	};
 
 	return transporter.sendMail(mailOptions, (err, info)=> err?err:info.response);
 }
-

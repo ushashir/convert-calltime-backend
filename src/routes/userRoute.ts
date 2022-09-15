@@ -1,15 +1,20 @@
 import { sendEmail, verifyUser } from "../controller/emailServices";
-import {Router} from "express";
-import {registerUser, loginUser, updateUser, forgotPassword, resetPassword} from "../controller/userController";
-
+import { Router } from "express";
+import {
+	registerUser,
+	loginUser,
+	updateUser,
+	forgotPassword,
+	resetPassword,
+} from "../controller/userController";
 
 const router = Router();
 
-router.get("/verify/:token",async (req, res)=>{
+router.get("/verify/:token", async (req, res) => {
 	const token = req.params.token;
 	try {
 		const response = await verifyUser(token);
-		res.status(200).json({message: "user verified", response});
+		res.status(200).json({ message: "user verified", response });
 	} catch (error) {
 		res.status(400).send(error);
 	}
