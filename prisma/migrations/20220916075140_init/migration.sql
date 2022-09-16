@@ -7,7 +7,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "avatar" TEXT,
+    "avatar" TEXT NOT NULL DEFAULT '',
     "isVerified" BOOLEAN NOT NULL DEFAULT false
 );
 

@@ -20,7 +20,7 @@ router.post("/confirmation", async (req, res) => {
         res.status(200).json({ message: "Email sent successfully", response });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message: "An error occurred",
             error
         });
@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message: error
         });
     }
@@ -54,7 +54,7 @@ router.patch("/:id", async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message: error
         });
     }
@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ message: error });
+        res.status(400).json({ message: error });
     }
 });
 /*POST forgot password */
@@ -79,12 +79,12 @@ router.post("/forgotpassword", async (req, res) => {
         const data = req.body;
         const response = await (0, userController_1.forgotPassword)(data);
         res.status(201).json({
-            message: "Success",
+            message: "Check your email to reset your password",
             response
         });
     }
     catch (error) {
-        res.status(500).json({ message: error });
+        res.status(400).json({ message: error });
     }
 });
 router.get("/resetpassword/:token", (req, res) => {
@@ -104,7 +104,7 @@ router.post("/resetpassword", async (req, res) => {
         res.status(200).json({ message: "Success" });
     }
     catch (error) {
-        res.status(500).json(error);
+        res.status(400).json(error);
     }
 });
 exports.default = router;
