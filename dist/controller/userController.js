@@ -11,6 +11,7 @@ const hashPassword_1 = require("../utils/hashPassword");
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const authMiddleware_1 = require("../utils/authMiddleware");
 const emailService_1 = require("../utils/emailService");
+const emailServices_1 = require("./emailServices");
 async function registerUser(data) {
     const validData = validation_1.registerUSerSchema.safeParse(data);
     if (!validData.success) {
@@ -31,7 +32,7 @@ async function registerUser(data) {
     });
     if (duplicateUserName)
         throw "User name already exist";
-    return prismaClient_1.default.user.create({
+    const response = prismaClient_1.default.user.create({
         data: {
             firstName: record.firstName,
             lastName: record.lastName,
@@ -49,6 +50,8 @@ async function registerUser(data) {
             phone: true,
         },
     });
+    (0, emailServices_1.sendEmail)({ email: (await response).email });
+    return (`Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}`);
 }
 exports.registerUser = registerUser;
 async function loginUser(data) {
@@ -72,7 +75,7 @@ async function loginUser(data) {
     if (!match) {
         throw "Incorrect password. Access denied";
     }
-    return (0, authMiddleware_1.generateAccessToken)(user.id);
+    return ({ token: (0, authMiddleware_1.generateAccessToken)(user.id), user });
 }
 exports.loginUser = loginUser;
 async function updateUser(data, id) {
@@ -104,6 +107,7 @@ async function updateUser(data, id) {
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,
+            isVerified: record.isVerified,
             password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
         },
         select: {

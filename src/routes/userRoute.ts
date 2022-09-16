@@ -27,7 +27,7 @@ router.post("/confirmation", async(req, res) => {
   
 	} catch (error) {
 		
-		res.status(500).json({
+		res.status(400).json({
 			message: "An error occurred",
 			error
 		});
@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
 			response
 		});
 	} catch (error) {
-		res.status(500).json({
+		res.status(400).json({
 			message: error
 		});
 	}
@@ -62,7 +62,7 @@ router.patch("/:id", async (req, res) => {
 			response
 		});
 	} catch (error) {
-		res.status(500).json({
+		res.status(400).json({
 			message: error
 		});
 	}
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
 			response
 		});
 	} catch (error) {
-		res.status(500).json({ message: error });
+		res.status(400).json({ message: error });
 	}
 });
 
@@ -90,10 +90,10 @@ router.post("/forgotpassword", async (req, res) => {
 		const data = req.body;
 		const response = await forgotPassword(data);
 		res.status(201).json({
-			message: "Success",
+			message: "Check your email to reset your password",
 			response});
 	}catch(error) {
-		res.status(500).json({message: error});
+		res.status(400).json({message: error});
 	}
 });
 
@@ -114,7 +114,7 @@ router.post("/resetpassword", async (req, res) => {
 		await resetPassword(token, newPassword);
 		res.status(200).json({message: "Success"});
 	} catch (error) {
-		res.status(500).json(error);
+		res.status(400).json(error);
 	}
 });
 

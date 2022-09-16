@@ -10,6 +10,7 @@ import { decryptPassword, encryptPassword } from "../utils/hashPassword";
 import cloudinary from "../utils/cloudinary";
 import { generateAccessToken } from "../utils/authMiddleware";
 import { emailServices } from "../utils/emailService";
+import { sendEmail } from "./emailServices";
 
 export async function registerUser(data: Record<string, unknown>) {
 	const validData = registerUSerSchema.safeParse(data);
@@ -32,7 +33,7 @@ export async function registerUser(data: Record<string, unknown>) {
 	});
 	if (duplicateUserName) throw "User name already exist";
 
-	return prisma.user.create({
+	const response = prisma.user.create({
 		data: {
 			firstName: record.firstName,
 			lastName: record.lastName,
@@ -50,6 +51,8 @@ export async function registerUser(data: Record<string, unknown>) {
 			phone: true,
 		},
 	});
+	sendEmail({ email: (await response).email });
+	return (`Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}`)
 }
 
 export async function loginUser(data: Record<string, unknown>) {
@@ -78,7 +81,7 @@ export async function loginUser(data: Record<string, unknown>) {
 	if (!match) {
 		throw "Incorrect password. Access denied";
 	}
-	return generateAccessToken(user.id as unknown as string);
+	return ({ token: generateAccessToken(user.id as unknown as string), user });
 }
 
 export async function updateUser(data: Record<string, unknown>, id: number) {
@@ -113,6 +116,7 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
+			isVerified: record.isVerified,
 			password: record.password ? await encryptPassword(record.password) as string : user.password as string
 		},
 		select: {
