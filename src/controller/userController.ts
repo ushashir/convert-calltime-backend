@@ -113,6 +113,7 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
+			isVerified: record.isVerified,
 			password: record.password ? await encryptPassword(record.password) as string : user.password as string
 		},
 		select: {

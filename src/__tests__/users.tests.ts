@@ -36,7 +36,6 @@ describe("Sigm up test", () => {
 			password: "pass",
 			confirmPassword: "pass"
 		});
-		console.log(response);
 		
 		expect(response.status).toBe(201);
 		expect(response.body.message).toBe("Success");

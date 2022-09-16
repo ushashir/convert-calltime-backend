@@ -104,6 +104,7 @@ async function updateUser(data, id) {
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,
+            isVerified: record.isVerified,
             password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
         },
         select: {
