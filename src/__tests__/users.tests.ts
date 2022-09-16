@@ -1,15 +1,9 @@
-import { mockReset } from "jest-mock-extended";
+import { userInfo } from "os";
 import supertest from "supertest";
 import app from "../app";
 import prisma from "../utils/prismaClient";
-// import { prismaMock } from "../singleton";
 
 const request = supertest(app);
-
-// beforeAll(async () => {
-// 	await prismaMock.$connect()
-// 	console.log("database connected successfully");
-// })
 
 const user = {
 	firstName: "test",
@@ -20,11 +14,7 @@ const user = {
 	password: "pass",
 	confirmPassword: "pass"
 }
-// afterAll(async () => {
-// 	// mockReset(prismaMock)
-//     await prismaMock.$disconnect()
-//     console.log("database disconnected successfully")
-// })
+
 describe("Sign up test", () => {
 	it("should signup user", async () => {
 		const response = await request.post("/api/users").send(user);
@@ -51,6 +41,22 @@ describe("Login test", () => {
 			userName: user.userName,
 			password: user.password,
 		});
+		expect(response.status).toBe(200);
+		expect(response.body.message).toBe("Success");
+		expect(response.body).toHaveProperty("response");
+	});
+});
+
+describe("Update user test", () => {
+	it("should update user", async () => {
+		const userdata = await prisma.user.findUnique({ where: { email: user.email } })
+		const response = await request.patch(`/api/users/${userdata?.id}`).send({
+			avatar: "https://images.unsplash.com/photo-1533450718592-29d45635f0a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8anBnfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+			firstName: "test_updated",
+			lastName: "test_updated",
+			phone: "01234566"
+		});
+
 		expect(response.status).toBe(200);
 		expect(response.body.message).toBe("Success");
 		expect(response.body).toHaveProperty("response");
