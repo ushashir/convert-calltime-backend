@@ -100,7 +100,7 @@ async function updateUser(data, id) {
             id
         },
         data: {
-            avatar: uploadedResponse ? uploadedResponse.url : null,
+            avatar: uploadedResponse ? uploadedResponse.url : record.avatar,
             firstName: record.firstName,
             lastName: record.lastName,
             phone: record.phone,

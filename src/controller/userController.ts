@@ -109,7 +109,7 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			id
 		},
 		data: {
-			avatar: uploadedResponse ? uploadedResponse.url : null,
+			avatar: uploadedResponse ? uploadedResponse.url : record.avatar,
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
