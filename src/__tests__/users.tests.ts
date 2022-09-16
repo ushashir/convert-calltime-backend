@@ -2,7 +2,7 @@ import supertest from "supertest";
 import app from "../app";
 import db from "../utils/prismaClient";
 
-const request =  supertest(app);
+const request = supertest(app);
 
 beforeAll(async () => {
 	await db.$connect()
@@ -15,12 +15,12 @@ beforeAll(async () => {
 		});
 });
 
-afterAll(async()=>{
+afterAll(async () => {
 	await db.$disconnect()
-		.then(()=>{
+		.then(() => {
 			console.log("database disconnected successfully");
 		})
-		.catch((err)=>{
+		.catch((err) => {
 			console.log(err);
 		});
 });
@@ -36,7 +36,7 @@ describe("Sigm up test", () => {
 			password: "pass",
 			confirmPassword: "pass"
 		});
-		
+
 		expect(response.status).toBe(201);
 		expect(response.body.message).toBe("Success");
 		expect(response.body).toHaveProperty("response");
@@ -66,7 +66,7 @@ describe("Login test", () => {
 	});
 });
 
-describe("Forgot password test",  () => { 
+describe("Forgot password test", () => {
 	it("should send reset link mail", async () => {
 		const response = await request.post("/api/users/forgotpassword").send({
 			email: "test@gmail.com"
@@ -74,7 +74,7 @@ describe("Forgot password test",  () => {
 		expect(response.status).toBe(200);
 		expect(response.body.message).toBe("Check your email to reset your password");
 	});
-	it("should not send mail to invalid user", async()=> {
+	it("should not send mail to invalid user", async () => {
 		const response = await request.post("/api/users/forgotpassword").send({
 			email: "invalid@mail.com"
 		});
@@ -82,4 +82,20 @@ describe("Forgot password test",  () => {
 		expect(response.body.message).toBe("User does not exist");
 	});
 
+});
+
+describe("Update user test", () => {
+	it("should update user", async () => {
+		const response = await request.patch("/api/users/2").send({
+			avatar: "https://images.unsplash.com/photo-1533450718592-29d45635f0a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8anBnfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+			firstName: "test_updated",
+			lastName: "test",
+			phone: "01234566"
+		});
+		console.log('the response:', response.status);
+
+		expect(response.status).toBe(200);
+		expect(response.body.message).toBe("Success");
+		expect(response.body).toHaveProperty("response");
+	});
 });

@@ -33,7 +33,7 @@ export async function registerUser(data: Record<string, unknown>) {
 	});
 	if (duplicateUserName) throw "User name already exist";
 
-	const response =  prisma.user.create({
+	const response = prisma.user.create({
 		data: {
 			firstName: record.firstName,
 			lastName: record.lastName,
@@ -52,7 +52,7 @@ export async function registerUser(data: Record<string, unknown>) {
 		},
 	});
 	sendEmail({ email: (await response).email });
-	return (`Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}` )
+	return (`Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}`)
 }
 
 export async function loginUser(data: Record<string, unknown>) {
@@ -112,7 +112,7 @@ export async function updateUser(data: Record<string, unknown>, id: number) {
 			id
 		},
 		data: {
-			// avatar: uploadedResponse ? uploadedResponse.url : null,
+			avatar: uploadedResponse ? uploadedResponse.url : record.avatar,
 			firstName: record.firstName,
 			lastName: record.lastName,
 			phone: record.phone,
