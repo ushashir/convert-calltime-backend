@@ -18,12 +18,11 @@ export async function sendEmail(email:Record<string, unknown>) {
 
 	const response = await emailServices(userData,"verify");
 	return response;
-
 }
 
 export async function verifyUser(token:string) {
 	const decoded = jwt.verify(token, process.env.AUTH_SECRET as string);
-	const id = decoded as unknown as Record<string, number>;
+	const id = decoded as unknown as Record<string, string>;
 	const user = await prisma.user.findUnique({where: {id: id.user_id}});
 	if(!user) throw "user not found";
 	const response = await updateUser({isVerified:true}, user.id);

@@ -1,42 +1,33 @@
+import { mockReset } from "jest-mock-extended";
 import supertest from "supertest";
 import app from "../app";
-import db from "../utils/prismaClient";
+import prisma from "../utils/prismaClient";
+// import { prismaMock } from "../singleton";
 
-const request =  supertest(app);
+const request = supertest(app);
 
-beforeAll(async () => {
-	await db.$connect()
-		.then(() => {
-			console.log("database connected successfully");
-		})
+// beforeAll(async () => {
+// 	await prismaMock.$connect()
+// 	console.log("database connected successfully");
+// })
 
-		.catch((err) => {
-			console.log(err);
-		});
-});
-
-afterAll(async()=>{
-	await db.$disconnect()
-		.then(()=>{
-			console.log("database disconnected successfully");
-		})
-		.catch((err)=>{
-			console.log(err);
-		});
-});
-
-describe("Sigm up test", () => {
+const user = {
+	firstName: "test",
+	lastName: "test",
+	userName: "test",
+	email: "test@mail.com",
+	phone: "02346678940",
+	password: "pass",
+	confirmPassword: "pass"
+}
+// afterAll(async () => {
+// 	// mockReset(prismaMock)
+//     await prismaMock.$disconnect()
+//     console.log("database disconnected successfully")
+// })
+describe("Sign up test", () => {
 	it("should signup user", async () => {
-		const response = await request.post("/api/users").send({
-			firstName: "test",
-			lastName: "test",
-			userName: "test111",
-			email: "test11@gmail.com",
-			phone: "01234567",
-			password: "pass",
-			confirmPassword: "pass"
-		});
-		
+		const response = await request.post("/api/users").send(user);
 		expect(response.status).toBe(201);
 		expect(response.body.message).toBe("Success");
 		expect(response.body).toHaveProperty("response");
@@ -47,8 +38,8 @@ describe("Login test", () => {
 	//Login with email
 	it("should login a user with email", async () => {
 		const response = await request.post("/api/users/login").send({
-			email: "test@gmail.com",
-			password: "test",
+			email: user.email,
+			password: user.password,
 		});
 		expect(response.status).toBe(200);
 		expect(response.body.message).toBe("Success");
@@ -57,8 +48,8 @@ describe("Login test", () => {
 	// Login with username
 	it("should login a user with username", async () => {
 		const response = await request.post("/api/users/login").send({
-			userName: "test",
-			password: "test",
+			userName: user.userName,
+			password: user.password,
 		});
 		expect(response.status).toBe(200);
 		expect(response.body.message).toBe("Success");
@@ -69,7 +60,7 @@ describe("Login test", () => {
 describe("Forgot password test",  () => { 
 	it("should send reset link mail", async () => {
 		const response = await request.post("/api/users/forgotpassword").send({
-			email: "test@gmail.com"
+			email: user.email
 		});
 		expect(response.status).toBe(200);
 		expect(response.body.message).toBe("Check your email to reset your password");
@@ -78,8 +69,14 @@ describe("Forgot password test",  () => {
 		const response = await request.post("/api/users/forgotpassword").send({
 			email: "invalid@mail.com"
 		});
-		expect(response.status).toBe(500);
+		expect(response.status).toBe(400);
 		expect(response.body.message).toBe("User does not exist");
 	});
 
 });
+
+describe("Reset db", () => {
+	it("should delete user", async () => {
+		 await prisma.user.delete({where:{email: user.email}})
+	})
+})

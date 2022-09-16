@@ -32,7 +32,7 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
 			where: {
-				id: user_id as unknown as number,
+				id: user_id as unknown as string,
 			},
 		});
 
