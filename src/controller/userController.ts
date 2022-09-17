@@ -84,8 +84,9 @@ export async function loginUser(data: Record<string, unknown>) {
 	return ({ token: generateAccessToken(user.id as unknown as string), user });
 }
 
-export async function updateUser(data: Record<string, unknown>, id: number) {
+export async function updateUser(data: Record<string, unknown>) {
 	const validData = updateUserSchema.safeParse(data);
+	const id = data.id as string;
 	if (!validData.success) {
 		throw validData.error;
 	}
@@ -142,8 +143,8 @@ export async function forgotPassword(data: Record<string, unknown>) {
 
 export async function resetPassword(token: string, newPassword: string) {
 	const decoded = jwt.verify(token, process.env.AUTH_SECRET as string);
-	const id = decoded as unknown as Record<string, number>;
+	const id = decoded as unknown as Record<string, string>;
 	const user = await prisma.user.findUnique({ where: { id: id.user_id } });
 	if (!user) throw "user not found";
-	await updateUser({ password: newPassword }, user.id);
+	await updateUser({ password: newPassword, id: user.id });
 }

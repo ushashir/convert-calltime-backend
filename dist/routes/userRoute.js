@@ -48,7 +48,7 @@ router.patch("/", authMiddleware_1.auth, async (req, res) => {
     try {
         const data = req.body;
         const id = req.user.user_id;
-        const response = await (0, userController_1.updateUser)(data, Number(id));
+        const response = await (0, userController_1.updateUser)({ ...data, id });
         res.status(200).json({
             message: "Success",
             response
@@ -79,7 +79,7 @@ router.post("/forgotpassword", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.forgotPassword)(data);
-        res.status(201).json({
+        res.status(200).json({
             message: "Check your email to reset your password",
             response
         });

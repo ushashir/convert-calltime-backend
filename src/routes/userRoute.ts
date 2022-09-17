@@ -54,11 +54,12 @@ router.post("/", async (req, res) => {
 });
 
 /* POST update user */
-router.patch("/", auth, async (req: userRequest, res: express.Response) => {
+router.patch("/", auth, async (req: userRequest, res) => {
 	try {
 		const data = req.body;
 		const id = req.user.user_id;
-		const response = await updateUser(data, Number(id));
+
+		const response = await updateUser({ ...data, id });
 		res.status(200).json({
 			message: "Success",
 			response
@@ -91,7 +92,7 @@ router.post("/forgotpassword", async (req, res) => {
 	try {
 		const data = req.body;
 		const response = await forgotPassword(data);
-		res.status(201).json({
+		res.status(200).json({
 			message: "Check your email to reset your password",
 			response
 		});
