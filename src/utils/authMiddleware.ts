@@ -20,7 +20,6 @@ export function generateAccessToken(id: string) {
 export async function auth(req: userRequest, res: Response, next: NextFunction) {
 	const authorization = req.headers.authorization;
 
-
 	if (!authorization)
 		return res.status(401).json({ error: "Access Denied, no token Provided" });
 	try {

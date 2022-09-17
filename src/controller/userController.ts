@@ -81,7 +81,20 @@ export async function loginUser(data: Record<string, unknown>) {
 	if (!match) {
 		throw "Incorrect password. Access denied";
 	}
-	return ({ token: generateAccessToken(user.id as unknown as string), user });
+	const {id, firstName, lastName, email, userName,phone,avatar,isVerified} = user
+	return ({
+		token: generateAccessToken(user.id as unknown as string),
+		userdata:{
+			id,
+			firstName,
+			lastName,
+			userName,
+			email,
+			phone,
+			avatar,
+			isVerified
+		}
+	});
 }
 
 export async function updateUser(data: Record<string, unknown>) {
