@@ -1,5 +1,5 @@
 import { sendEmail, verifyUser } from "../controller/emailServices";
-import { Router } from "express";
+import express, { Router } from "express";
 import {
 	registerUser,
 	loginUser,
@@ -7,6 +7,8 @@ import {
 	forgotPassword,
 	resetPassword,
 } from "../controller/userController";
+import { auth } from "../utils/authMiddleware";
+import { userRequest } from "../types/express";
 
 const router = Router();
 
@@ -19,20 +21,20 @@ router.get("/verify/:token", async (req, res) => {
 		res.status(400).send(error);
 	}
 });
-router.post("/confirmation", async(req, res) => {
+router.post("/confirmation", async (req, res) => {
 	try {
-   
+
 		const response = await sendEmail(req.body);
-		res.status(200).json({message: "Email sent successfully", response});
-  
+		res.status(200).json({ message: "Email sent successfully", response });
+
 	} catch (error) {
-		
+
 		res.status(400).json({
 			message: "An error occurred",
 			error
 		});
 	}
-  
+
 }
 );
 /* POST register users*/
@@ -52,11 +54,12 @@ router.post("/", async (req, res) => {
 });
 
 /* POST update user */
-router.patch("/:id", async (req, res) => {
+router.patch("/", auth, async (req: userRequest, res) => {
 	try {
 		const data = req.body;
-		const { id } = req.params;
-		const response = await updateUser(data, id);
+		const id = req.user.user_id;
+
+		const response = await updateUser({ ...data, id });
 		res.status(200).json({
 			message: "Success",
 			response
@@ -91,9 +94,10 @@ router.post("/forgotpassword", async (req, res) => {
 		const response = await forgotPassword(data);
 		res.status(200).json({
 			message: "Check your email to reset your password",
-			response});
-	}catch(error) {
-		res.status(400).json({message: error});
+			response
+		});
+	} catch (error) {
+		res.status(400).json({ message: error });
 	}
 });
 
@@ -112,7 +116,7 @@ router.post("/resetpassword", async (req, res) => {
 	const newPassword: string = req.body.password;
 	try {
 		await resetPassword(token, newPassword);
-		res.status(200).json({message: "Success"});
+		res.status(200).json({ message: "Success" });
 	} catch (error) {
 		res.status(400).json(error);
 	}

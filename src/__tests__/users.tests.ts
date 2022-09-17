@@ -50,7 +50,8 @@ describe("Login test", () => {
 describe("Update user test", () => {
 	it("should update user", async () => {
 		const userdata = await prisma.user.findUnique({ where: { email: user.email } })
-		const response = await request.patch(`/api/users/${userdata?.id}`).send({
+		const response = await request.patch(`/api/users`).send({
+			id: userdata?.id,
 			avatar: "https://images.unsplash.com/photo-1533450718592-29d45635f0a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8anBnfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
 			firstName: "test_updated",
 			lastName: "test_updated",
@@ -63,7 +64,7 @@ describe("Update user test", () => {
 	});
 });
 
-describe("Forgot password test",  () => { 
+describe("Forgot password test", () => {
 	it("should send reset link mail", async () => {
 		const response = await request.post("/api/users/forgotpassword").send({
 			email: user.email
@@ -71,7 +72,7 @@ describe("Forgot password test",  () => {
 		expect(response.status).toBe(200);
 		expect(response.body.message).toBe("Check your email to reset your password");
 	});
-	it("should not send mail to invalid user", async()=> {
+	it("should not send mail to invalid user", async () => {
 		const response = await request.post("/api/users/forgotpassword").send({
 			email: "invalid@mail.com"
 		});
@@ -83,6 +84,6 @@ describe("Forgot password test",  () => {
 
 describe("Reset db", () => {
 	it("should delete user", async () => {
-		 await prisma.user.delete({where:{email: user.email}})
+		await prisma.user.delete({ where: { email: user.email } })
 	})
 })

@@ -78,8 +78,9 @@ async function loginUser(data) {
     return ({ token: (0, authMiddleware_1.generateAccessToken)(user.id), user });
 }
 exports.loginUser = loginUser;
-async function updateUser(data, id) {
+async function updateUser(data) {
     const validData = validation_1.updateUserSchema.safeParse(data);
+    const id = data.id;
     if (!validData.success) {
         throw validData.error;
     }
@@ -137,7 +138,7 @@ async function resetPassword(token, newPassword) {
     const user = await prismaClient_1.default.user.findUnique({ where: { id: id.user_id } });
     if (!user)
         throw "user not found";
-    await updateUser({ password: newPassword }, user.id);
+    await updateUser({ password: newPassword, id: user.id });
 }
 exports.resetPassword = resetPassword;
 //# sourceMappingURL=userController.js.map
