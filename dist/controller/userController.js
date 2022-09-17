@@ -75,7 +75,20 @@ async function loginUser(data) {
     if (!match) {
         throw "Incorrect password. Access denied";
     }
-    return ({ token: (0, authMiddleware_1.generateAccessToken)(user.id), user });
+    const { id, firstName, lastName, email, userName, phone, avatar, isVerified } = user;
+    return ({
+        token: (0, authMiddleware_1.generateAccessToken)(user.id),
+        userdata: {
+            id,
+            firstName,
+            lastName,
+            userName,
+            email,
+            phone,
+            avatar,
+            isVerified
+        }
+    });
 }
 exports.loginUser = loginUser;
 async function updateUser(data) {
