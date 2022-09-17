@@ -1,5 +1,5 @@
 import { sendEmail, verifyUser } from "../controller/emailServices";
-import { Router } from "express";
+import express, { Router } from "express";
 import {
 	registerUser,
 	loginUser,
@@ -8,6 +8,7 @@ import {
 	resetPassword,
 } from "../controller/userController";
 import { auth } from "../utils/authMiddleware";
+import { userRequest } from "../types/express";
 
 const router = Router();
 
@@ -53,10 +54,10 @@ router.post("/", async (req, res) => {
 });
 
 /* POST update user */
-router.patch("/:id", auth, async (req, res) => {
+router.patch("/", auth, async (req: userRequest, res: express.Response) => {
 	try {
 		const data = req.body;
-		const { id } = req.params;
+		const id = req.user.user_id;
 		const response = await updateUser(data, Number(id));
 		res.status(200).json({
 			message: "Success",

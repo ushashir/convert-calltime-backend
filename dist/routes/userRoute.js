@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const emailServices_1 = require("../controller/emailServices");
 const express_1 = require("express");
 const userController_1 = require("../controller/userController");
+const authMiddleware_1 = require("../utils/authMiddleware");
 const router = (0, express_1.Router)();
 router.get("/verify/:token", async (req, res) => {
     const token = req.params.token;
@@ -43,10 +44,10 @@ router.post("/", async (req, res) => {
     }
 });
 /* POST update user */
-router.patch("/:id", async (req, res) => {
+router.patch("/", authMiddleware_1.auth, async (req, res) => {
     try {
         const data = req.body;
-        const { id } = req.params;
+        const id = req.user.user_id;
         const response = await (0, userController_1.updateUser)(data, Number(id));
         res.status(200).json({
             message: "Success",
