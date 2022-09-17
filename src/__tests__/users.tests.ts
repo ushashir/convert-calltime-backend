@@ -25,7 +25,7 @@ afterAll(async () => {
 		});
 });
 
-describe("Sigm up test", () => {
+describe("Sign up test", () => {
 	it("should signup user", async () => {
 		const response = await request.post("/api/users").send({
 			firstName: "test",
