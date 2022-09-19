@@ -2,14 +2,17 @@ import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import bodyParser from "body-parser";
+import cors from "cors";
+import helmet from "helmet";
 
 import usersRouter from "./routes/userRoute";
 
 const app = express();
 
-console.log("app running on port 3000");
+console.log("app running on port 7000");
 
+app.use(cors());
+app.use(helmet());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

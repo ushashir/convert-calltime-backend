@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.updateUser = exports.loginUser = exports.registerUser = void 0;
+exports.getById = exports.resetPassword = exports.forgotPassword = exports.updateUser = exports.loginUser = exports.registerUser = void 0;
 const validation_1 = require("../utils/validation");
 const prismaClient_1 = __importDefault(require("../utils/prismaClient"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -154,4 +154,8 @@ async function resetPassword(token, newPassword) {
     await updateUser({ password: newPassword, id: user.id });
 }
 exports.resetPassword = resetPassword;
+async function getById(id) {
+    return await prismaClient_1.default.user.findUnique({ where: { id } });
+}
+exports.getById = getById;
 //# sourceMappingURL=userController.js.map
