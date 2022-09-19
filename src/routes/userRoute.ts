@@ -1,11 +1,12 @@
 import { sendEmail, verifyUser } from "../controller/emailServices";
-import express, { Router } from "express";
+import { Router } from "express";
 import {
 	registerUser,
 	loginUser,
 	updateUser,
 	forgotPassword,
 	resetPassword,
+	getById
 } from "../controller/userController";
 import { auth } from "../utils/authMiddleware";
 import { userRequest } from "../types/express";
@@ -18,7 +19,7 @@ router.get("/verify/:token", async (req, res) => {
 		const response = await verifyUser(token);
 		res.status(200).json({ message: "user verified", response });
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(error);
 	}
 });
 router.post("/confirmation", async (req, res) => {
@@ -37,6 +38,17 @@ router.post("/confirmation", async (req, res) => {
 
 }
 );
+
+router.get("/", auth, async (req:userRequest, res) => {
+	try {
+		const id = req.user.user_id
+		const response = await getById(id)
+		res.status(200).json({message: "success", response})
+	} catch (error) {
+		res.status(400).json(error)
+	}
+})
+
 /* POST register users*/
 router.post("/", async (req, res) => {
 	try {
@@ -53,7 +65,7 @@ router.post("/", async (req, res) => {
 	}
 });
 
-/* POST update user */
+/* PATCH update user */
 router.patch("/", auth, async (req: userRequest, res) => {
 	try {
 		const data = req.body;
@@ -101,15 +113,6 @@ router.post("/forgotpassword", async (req, res) => {
 	}
 });
 
-router.get("/resetpassword/:token", (req, res) => {
-	const token = req.params.token;
-	res.send(`<form method="POST" action="/api/users/resetpassword">
-		<input type="hidden" value=${token} name="token">
-		<input type="password" name="password" placeholder="Enter new password"/>
-		<input type="submit" name="submit" value="Change password" />
-		</form>
-	`);
-});
 
 router.post("/resetpassword", async (req, res) => {
 	const token = req.body.token;

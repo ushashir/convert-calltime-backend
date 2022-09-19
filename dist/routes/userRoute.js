@@ -12,7 +12,7 @@ router.get("/verify/:token", async (req, res) => {
         res.status(200).json({ message: "user verified", response });
     }
     catch (error) {
-        res.status(400).send(error);
+        res.status(400).json(error);
     }
 });
 router.post("/confirmation", async (req, res) => {
@@ -25,6 +25,16 @@ router.post("/confirmation", async (req, res) => {
             message: "An error occurred",
             error
         });
+    }
+});
+router.get("/", authMiddleware_1.auth, async (req, res) => {
+    try {
+        const id = req.user.user_id;
+        const response = await (0, userController_1.getById)(id);
+        res.status(200).json({ message: "success", response });
+    }
+    catch (error) {
+        res.status(400).json(error);
     }
 });
 /* POST register users*/
@@ -43,7 +53,7 @@ router.post("/", async (req, res) => {
         });
     }
 });
-/* POST update user */
+/* PATCH update user */
 router.patch("/", authMiddleware_1.auth, async (req, res) => {
     try {
         const data = req.body;
