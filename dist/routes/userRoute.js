@@ -98,15 +98,6 @@ router.post("/forgotpassword", async (req, res) => {
         res.status(400).json({ message: error });
     }
 });
-router.get("/resetpassword/:token", (req, res) => {
-    const token = req.params.token;
-    res.send(`<form method="POST" action="/api/users/resetpassword">
-		<input type="hidden" value=${token} name="token">
-		<input type="password" name="password" placeholder="Enter new password"/>
-		<input type="submit" name="submit" value="Change password" />
-		</form>
-	`);
-});
 router.post("/resetpassword", async (req, res) => {
     const token = req.body.token;
     const newPassword = req.body.password;
