@@ -19,7 +19,9 @@ async function registerUser(data) {
     }
     const record = validData.data;
     // check for duplicate mail, phone and username
-    const duplicateMail = await prismaClient_1.default.user.findFirst({ where: { email: record.email } });
+    const duplicateMail = await prismaClient_1.default.user.findFirst({
+        where: { email: record.email },
+    });
     if (duplicateMail)
         throw "Email already exist";
     const duplicatePhone = await prismaClient_1.default.user.findFirst({
@@ -51,7 +53,7 @@ async function registerUser(data) {
         },
     });
     (0, emailServices_1.sendEmail)({ email: (await response).email });
-    return (`Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}`);
+    return `Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}`;
 }
 exports.registerUser = registerUser;
 async function loginUser(data) {
@@ -66,7 +68,9 @@ async function loginUser(data) {
         user = await prismaClient_1.default.user.findUnique({ where: { email: record.email } });
     }
     else if (record.userName) {
-        user = await prismaClient_1.default.user.findUnique({ where: { userName: record.userName } });
+        user = await prismaClient_1.default.user.findUnique({
+            where: { userName: record.userName },
+        });
     }
     if (!user) {
         throw "No user with username/email found. Please signup";
@@ -75,8 +79,8 @@ async function loginUser(data) {
     if (!match) {
         throw "Incorrect password. Access denied";
     }
-    const { id, firstName, lastName, email, userName, phone, avatar, isVerified } = user;
-    return ({
+    const { id, firstName, lastName, email, userName, phone, avatar, isVerified, } = user;
+    return {
         token: (0, authMiddleware_1.generateAccessToken)(user.id),
         userdata: {
             id,
@@ -86,9 +90,9 @@ async function loginUser(data) {
             email,
             phone,
             avatar,
-            isVerified
-        }
-    });
+            isVerified,
+        },
+    };
 }
 exports.loginUser = loginUser;
 async function updateUser(data) {
@@ -105,8 +109,8 @@ async function updateUser(data) {
     let uploadedResponse;
     if (avatar) {
         uploadedResponse = await cloudinary_1.default.uploader.upload(avatar, {
-            allowed_formats: ['jpg', 'png', "svg", "jpeg"],
-            folder: "live-project"
+            allowed_formats: ["jpg", "png", "svg", "jpeg"],
+            folder: "live-project",
         });
         if (!uploadedResponse)
             throw Error;
@@ -114,22 +118,26 @@ async function updateUser(data) {
     const record = validData.data;
     return prismaClient_1.default.user.update({
         where: {
-            id
+            id,
         },
         data: {
             avatar: uploadedResponse ? uploadedResponse.url : record.avatar,
             firstName: record.firstName,
             lastName: record.lastName,
+            userName: record.userName,
             phone: record.phone,
             isVerified: record.isVerified,
-            password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
+            password: record.password
+                ? (await (0, hashPassword_1.encryptPassword)(record.password))
+                : user.password,
         },
         select: {
             avatar: true,
             firstName: true,
             lastName: true,
-            phone: true
-        }
+            userName: true,
+            phone: true,
+        },
     });
 }
 exports.updateUser = updateUser;
@@ -155,7 +163,18 @@ async function resetPassword(token, newPassword) {
 }
 exports.resetPassword = resetPassword;
 async function getById(id) {
-    return await prismaClient_1.default.user.findUnique({ where: { id } });
+    return await prismaClient_1.default.user.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            avatar: true,
+            firstName: true,
+            lastName: true,
+            userName: true,
+            phone: true,
+            email: true,
+        },
+    });
 }
 exports.getById = getById;
 //# sourceMappingURL=userController.js.map

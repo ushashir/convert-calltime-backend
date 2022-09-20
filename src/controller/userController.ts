@@ -143,6 +143,7 @@ export async function updateUser(data: Record<string, unknown>) {
       avatar: uploadedResponse ? uploadedResponse.url : record.avatar,
       firstName: record.firstName,
       lastName: record.lastName,
+      userName: record.userName,
       phone: record.phone,
       isVerified: record.isVerified,
       password: record.password
@@ -153,6 +154,7 @@ export async function updateUser(data: Record<string, unknown>) {
       avatar: true,
       firstName: true,
       lastName: true,
+      userName: true,
       phone: true,
     },
   });
@@ -178,5 +180,16 @@ export async function resetPassword(token: string, newPassword: string) {
 }
 
 export async function getById(id: string) {
-  return await prisma.user.findUnique({ where: { id } });
+  return await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      avatar: true,
+      firstName: true,
+      lastName: true,
+      userName: true,
+      phone: true,
+      email: true,
+    },
+  });
 }
