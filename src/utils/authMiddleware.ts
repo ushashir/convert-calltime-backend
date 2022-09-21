@@ -19,12 +19,11 @@ export function generateAccessToken(id: string) {
 
 export async function auth(req: userRequest, res: Response, next: NextFunction) {
 	const authorization = req.headers.authorization;
- 
-	
+
 	if (!authorization)
 		return res.status(401).json({ error: "Access Denied, no token Provided" });
 	try {
-	  const token = authorization.slice(7, authorization.length);
+		const token = authorization.slice(7, authorization.length);
 		const decoded = jwt.verify(token, key);
 		if (!decoded) {
 			res.status(401).send("Unauthorized");
@@ -32,14 +31,14 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
 			where: {
-				id: user_id as unknown as number,
+				id: user_id as unknown as string,
 			},
 		});
 
 		if (!user) {
 			res.status(401).send("please register to access our service");
 		}
-	  req.user = decoded;
+		req.user = decoded;
 		next();
 	} catch (error) {
 		res.status(400).send(error);

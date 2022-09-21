@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const emailServices_1 = require("../controller/emailServices");
 const express_1 = require("express");
 const userController_1 = require("../controller/userController");
+const authMiddleware_1 = require("../utils/authMiddleware");
 const router = (0, express_1.Router)();
 router.get("/verify/:token", async (req, res) => {
     const token = req.params.token;
@@ -11,7 +12,7 @@ router.get("/verify/:token", async (req, res) => {
         res.status(200).json({ message: "user verified", response });
     }
     catch (error) {
-        res.status(400).send(error);
+        res.status(400).json(error);
     }
 });
 router.post("/confirmation", async (req, res) => {
@@ -20,10 +21,20 @@ router.post("/confirmation", async (req, res) => {
         res.status(200).json({ message: "Email sent successfully", response });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message: "An error occurred",
             error
         });
+    }
+});
+router.get("/", authMiddleware_1.auth, async (req, res) => {
+    try {
+        const id = req.user.user_id;
+        const response = await (0, userController_1.getById)(id);
+        res.status(200).json({ message: "success", response });
+    }
+    catch (error) {
+        res.status(400).json(error);
     }
 });
 /* POST register users*/
@@ -37,24 +48,24 @@ router.post("/", async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message: error
         });
     }
 });
-/* POST update user */
-router.patch("/:id", async (req, res) => {
+/* PATCH update user */
+router.patch("/", authMiddleware_1.auth, async (req, res) => {
     try {
         const data = req.body;
-        const { id } = req.params;
-        const response = await (0, userController_1.updateUser)(data, Number(id));
+        const id = req.user.user_id;
+        const response = await (0, userController_1.updateUser)({ ...data, id });
         res.status(200).json({
             message: "Success",
             response
         });
     }
     catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message: error
         });
     }
@@ -70,7 +81,7 @@ router.post("/login", async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ message: error });
+        res.status(400).json({ message: error });
     }
 });
 /*POST forgot password */
@@ -78,23 +89,14 @@ router.post("/forgotpassword", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.forgotPassword)(data);
-        res.status(201).json({
-            message: "Success",
+        res.status(200).json({
+            message: "Check your email to reset your password",
             response
         });
     }
     catch (error) {
-        res.status(500).json({ message: error });
+        res.status(400).json({ message: error });
     }
-});
-router.get("/resetpassword/:token", (req, res) => {
-    const token = req.params.token;
-    res.send(`<form method="POST" action="/api/users/resetpassword">
-		<input type="hidden" value=${token} name="token">
-		<input type="password" name="password" placeholder="Enter new password"/>
-		<input type="submit" name="submit" value="Change password" />
-		</form>
-	`);
 });
 router.post("/resetpassword", async (req, res) => {
     const token = req.body.token;
@@ -104,7 +106,7 @@ router.post("/resetpassword", async (req, res) => {
         res.status(200).json({ message: "Success" });
     }
     catch (error) {
-        res.status(500).json(error);
+        res.status(400).json(error);
     }
 });
 exports.default = router;

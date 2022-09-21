@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.updateUser = exports.loginUser = exports.registerUser = void 0;
+exports.getById = exports.resetPassword = exports.forgotPassword = exports.updateUser = exports.loginUser = exports.registerUser = void 0;
 const validation_1 = require("../utils/validation");
 const prismaClient_1 = __importDefault(require("../utils/prismaClient"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -11,6 +11,7 @@ const hashPassword_1 = require("../utils/hashPassword");
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const authMiddleware_1 = require("../utils/authMiddleware");
 const emailService_1 = require("../utils/emailService");
+const emailServices_1 = require("./emailServices");
 async function registerUser(data) {
     const validData = validation_1.registerUSerSchema.safeParse(data);
     if (!validData.success) {
@@ -18,7 +19,9 @@ async function registerUser(data) {
     }
     const record = validData.data;
     // check for duplicate mail, phone and username
-    const duplicateMail = await prismaClient_1.default.user.findFirst({ where: { email: record.email } });
+    const duplicateMail = await prismaClient_1.default.user.findFirst({
+        where: { email: record.email },
+    });
     if (duplicateMail)
         throw "Email already exist";
     const duplicatePhone = await prismaClient_1.default.user.findFirst({
@@ -31,7 +34,7 @@ async function registerUser(data) {
     });
     if (duplicateUserName)
         throw "User name already exist";
-    return prismaClient_1.default.user.create({
+    const response = prismaClient_1.default.user.create({
         data: {
             firstName: record.firstName,
             lastName: record.lastName,
@@ -49,6 +52,8 @@ async function registerUser(data) {
             phone: true,
         },
     });
+    (0, emailServices_1.sendEmail)({ email: (await response).email });
+    return `Hello ${(await response).firstName}, please check your email to confirm ${(await response).email}`;
 }
 exports.registerUser = registerUser;
 async function loginUser(data) {
@@ -63,7 +68,9 @@ async function loginUser(data) {
         user = await prismaClient_1.default.user.findUnique({ where: { email: record.email } });
     }
     else if (record.userName) {
-        user = await prismaClient_1.default.user.findUnique({ where: { userName: record.userName } });
+        user = await prismaClient_1.default.user.findUnique({
+            where: { userName: record.userName },
+        });
     }
     if (!user) {
         throw "No user with username/email found. Please signup";
@@ -72,11 +79,25 @@ async function loginUser(data) {
     if (!match) {
         throw "Incorrect password. Access denied";
     }
-    return (0, authMiddleware_1.generateAccessToken)(user.id);
+    const { id, firstName, lastName, email, userName, phone, avatar, isVerified, } = user;
+    return {
+        token: (0, authMiddleware_1.generateAccessToken)(user.id),
+        userdata: {
+            id,
+            firstName,
+            lastName,
+            userName,
+            email,
+            phone,
+            avatar,
+            isVerified,
+        },
+    };
 }
 exports.loginUser = loginUser;
-async function updateUser(data, id) {
+async function updateUser(data) {
     const validData = validation_1.updateUserSchema.safeParse(data);
+    const id = data.id;
     if (!validData.success) {
         throw validData.error;
     }
@@ -88,8 +109,8 @@ async function updateUser(data, id) {
     let uploadedResponse;
     if (avatar) {
         uploadedResponse = await cloudinary_1.default.uploader.upload(avatar, {
-            allowed_formats: ['jpg', 'png', "svg", "jpeg"],
-            folder: "live-project"
+            allowed_formats: ["jpg", "png", "svg", "jpeg"],
+            folder: "live-project",
         });
         if (!uploadedResponse)
             throw Error;
@@ -97,21 +118,26 @@ async function updateUser(data, id) {
     const record = validData.data;
     return prismaClient_1.default.user.update({
         where: {
-            id
+            id,
         },
         data: {
-            avatar: uploadedResponse ? uploadedResponse.url : null,
+            avatar: uploadedResponse ? uploadedResponse.url : record.avatar,
             firstName: record.firstName,
             lastName: record.lastName,
+            userName: record.userName,
             phone: record.phone,
-            password: record.password ? await (0, hashPassword_1.encryptPassword)(record.password) : user.password
+            isVerified: record.isVerified,
+            password: record.password
+                ? (await (0, hashPassword_1.encryptPassword)(record.password))
+                : user.password,
         },
         select: {
             avatar: true,
             firstName: true,
             lastName: true,
-            phone: true
-        }
+            userName: true,
+            phone: true,
+        },
     });
 }
 exports.updateUser = updateUser;
@@ -133,7 +159,22 @@ async function resetPassword(token, newPassword) {
     const user = await prismaClient_1.default.user.findUnique({ where: { id: id.user_id } });
     if (!user)
         throw "user not found";
-    await updateUser({ password: newPassword }, user.id);
+    await updateUser({ password: newPassword, id: user.id });
 }
 exports.resetPassword = resetPassword;
+async function getById(id) {
+    return await prismaClient_1.default.user.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            avatar: true,
+            firstName: true,
+            lastName: true,
+            userName: true,
+            phone: true,
+            email: true,
+        },
+    });
+}
+exports.getById = getById;
 //# sourceMappingURL=userController.js.map
