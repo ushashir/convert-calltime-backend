@@ -12,7 +12,7 @@ export async function emailServices(data: Record<string, unknown>, route: string
 
 	const token = jwt.sign({ user_id: id }, process.env.AUTH_SECRET as string , {expiresIn: "30m"});
 
-	const link = `${process.env.FRONTEND_URL}/api/users/${route}/${token}`;
+	const link = `${process.env.FRONTEND_URL}/${route}/${token}`;
 
 	const emailTemplate = `
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
