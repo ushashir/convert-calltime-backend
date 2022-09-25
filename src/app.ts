@@ -6,6 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 
 import usersRouter from "./routes/userRoute";
+import accountRouter from "./routes/accountRoute";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/users", usersRouter);
+app.use("/api/account", accountRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
