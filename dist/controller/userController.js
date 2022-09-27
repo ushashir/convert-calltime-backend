@@ -110,7 +110,7 @@ async function updateUser(data) {
     if (avatar) {
         uploadedResponse = await cloudinary_1.default.uploader.upload(avatar, {
             allowed_formats: ["jpg", "png", "svg", "jpeg"],
-            folder: "live-project",
+            folder: "live-project"
         });
         if (!uploadedResponse)
             throw Error;
