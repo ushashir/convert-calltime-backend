@@ -6,9 +6,7 @@ export async function createAccount(
   userId: string
 ) {
   const validData = createAccountSchema.safeParse(data);
-  if (!validData.success) {
-    throw validData.error;
-  }
+  if (!validData.success) throw validData.error;
   const record = validData.data;
   // check for existing account number
   const existingNumber = await prisma.account.findFirst({
@@ -25,5 +23,20 @@ export async function createAccount(
       userId: userId,
     },
   });
+
   return response;
+}
+
+export async function getAccounts(id:string) {
+  const userAccount = await prisma.account.findMany({
+    where:{
+      userId: id
+    }
+  })
+
+  return userAccount
+}
+
+export async function removeAccount(id:string) {
+  const response = await prisma.account.delete({where:{id:id}})
 }

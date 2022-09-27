@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";

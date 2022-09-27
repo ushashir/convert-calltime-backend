@@ -23,3 +23,7 @@
     "confirmPassword": "test"
 }
 `
+
+### START PRISMA COMMANDS
+- yarn prisma migrate dev
+- yarn prisma generate

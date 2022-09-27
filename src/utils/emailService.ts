@@ -17,12 +17,12 @@ export async function emailServices(data: Record<string, unknown>, route: string
 	const emailTemplate = `
 <div style="max-width: 700px;text-align: center; text-transform: uppercase;
      margin:auto; border: 10px solid #DE3D6D; padding: 50px 20px; font-size: 110%;">
-     <h2 style="color: #03435F;">Welcome to <span style="color : #DE3D6D;>Airtime<span><span style="color:#F5844C;>2CAsh<span></h2>
+     <h2 style="color: #03435F;">Welcome to <span style="color : #DE3D6D";>Airtime<span><span style="color:#F5844C;">2CAsh<span></h2>
      <p>Hello ${userName}, Please Follow the link by clicking on the button to verify your email
       </p>
       <div style="text-align:center ;">
         <a href=${link}
-       style="background: #E5E5E5;; text-decoration: none; color: white;
+       style="background: #03435F; text-decoration: none; color: white;
         padding: 10px 20px; margin: 10px 0;
        display: inline-block;">Click here</a>
       </div>
