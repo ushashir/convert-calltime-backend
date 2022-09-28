@@ -20,8 +20,10 @@ exports.registerUSerSchema = zod_1.default
     userName: zod_1.default.string(),
     email: zod_1.default.string().email(),
     phone: zod_1.default.string(),
-    password: zod_1.default.string().min(4),
-    confirmPassword: zod_1.default.string().min(4),
+    password: zod_1.default.string({
+        required_error: "Password is required",
+    }).min(6, { message: "Password must be 6 or more characters long" }),
+    confirmPassword: zod_1.default.string().min(6, { message: "Confirm password must be 6 or more characters long" }),
     avatar: zod_1.default.string().optional(),
     isVerified: zod_1.default.boolean().optional(),
 })
