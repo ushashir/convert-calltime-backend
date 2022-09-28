@@ -15,7 +15,7 @@ model User {
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String @default("")
+  avatar     String @default("https://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png")
   isVerified Boolean @default(false)
 
   createdAt DateTime @default(now())
