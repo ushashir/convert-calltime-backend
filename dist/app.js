@@ -18,7 +18,7 @@ app.use((0, cors_1.default)());
 app.use((0, helmet_1.default)());
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json({
-    limit: "10mb",
+    limit: "10mb"
 }));
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cookie_parser_1.default)());
