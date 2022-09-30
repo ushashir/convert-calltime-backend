@@ -60,8 +60,6 @@ export async function registerUser(data: Record<string, unknown>) {
 }
 
 export async function loginUser(data: Record<string, unknown>) {
-	//check that information entered by user matches the login schema
-
 	const isValidData = loginUserSchema.safeParse(data);
 
 	if (!isValidData.success) {
@@ -193,3 +191,4 @@ export async function getById(id: string) {
 		},
 	});
 }
+

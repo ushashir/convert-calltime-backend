@@ -57,7 +57,6 @@ async function registerUser(data) {
 }
 exports.registerUser = registerUser;
 async function loginUser(data) {
-    //check that information entered by user matches the login schema
     const isValidData = validation_1.loginUserSchema.safeParse(data);
     if (!isValidData.success) {
         throw isValidData.error;

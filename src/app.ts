@@ -8,6 +8,7 @@ import helmet from "helmet";
 
 import usersRouter from "./routes/userRoute";
 import accountRouter from "./routes/accountRoute";
+import walletRouter from "./routes/walletRoute";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 
 app.use("/api/users", usersRouter);
 app.use("/api/account", accountRouter);
+app.use("/api/wallet", walletRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

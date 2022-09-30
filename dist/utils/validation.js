@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
+exports.updateWalletSchema = exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.loginUserSchema = zod_1.default.object({
     email: zod_1.default.string().email().optional(),
@@ -51,5 +51,8 @@ exports.createAccountSchema = zod_1.default.object({
     accountName: zod_1.default.string(),
     accountNumber: zod_1.default.string(),
     wallet: zod_1.default.number().optional().default(0),
+});
+exports.updateWalletSchema = zod_1.default.object({
+    amount: zod_1.default.string(),
 });
 //# sourceMappingURL=validation.js.map

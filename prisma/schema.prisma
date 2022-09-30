@@ -17,6 +17,7 @@ model User {
   password   String
   avatar     String @default("")
   isVerified Boolean @default(false)
+  wallet  Int  @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,7 +30,6 @@ model Account {
   bankName  String
   accountName String 
   accountNumber String @unique
-  wallet  Int  @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
