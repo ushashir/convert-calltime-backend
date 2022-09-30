@@ -36,7 +36,7 @@ router.get("/", authMiddleware_1.auth, async (req, res) => {
         return res.status(200).json({ message: "success", response });
     }
     catch (error) {
-       return res.status(400).json(error);
+        res.status(400).json(error);
     }
 });
 /* POST register users*/
@@ -77,7 +77,6 @@ router.post("/login", async (req, res) => {
     try {
         const data = req.body;
         const response = await (0, userController_1.loginUser)(data);
-        console.log(response);
         return res.status(200).json({
             message: "Success",
             response

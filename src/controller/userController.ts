@@ -109,6 +109,7 @@ export async function loginUser(data: Record<string, unknown>) {
 			isVerified,
 			wallet
 		},
+
 	};
 }
 
@@ -150,6 +151,7 @@ export async function updateUser(data: Record<string, unknown>) {
 			password: record.password
 				? ((await encryptPassword(record.password)) as string)
 				: (user.password as string),
+			wallet: record.wallet as unknown as number
 		},
 		select: {
 			avatar: true,
@@ -157,6 +159,7 @@ export async function updateUser(data: Record<string, unknown>) {
 			lastName: true,
 			userName: true,
 			phone: true,
+			wallet: true
 		},
 	});
 }

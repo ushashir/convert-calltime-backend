@@ -131,6 +131,7 @@ async function updateUser(data) {
             password: record.password
                 ? (await (0, hashPassword_1.encryptPassword)(record.password))
                 : user.password,
+            wallet: record.wallet
         },
         select: {
             avatar: true,
@@ -138,6 +139,7 @@ async function updateUser(data) {
             lastName: true,
             userName: true,
             phone: true,
+            wallet: true
         },
     });
 }

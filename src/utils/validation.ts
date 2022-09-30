@@ -43,6 +43,7 @@ export const updateUserSchema = z.object({
 	confirmPassword: z.string().min(4).optional(),
 	avatar: z.string().optional(),
 	isVerified: z.boolean().optional(),
+	wallet: z.string().optional(),
 });
 
 export const createAccountSchema = z.object({
@@ -54,4 +55,5 @@ export const createAccountSchema = z.object({
 
 export const updateWalletSchema = z.object({
 	amount: z.string(),
+	email: z.string()
 })

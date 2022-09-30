@@ -90,8 +90,6 @@ router.post("/login", async (req, res) => {
 	try {
 		const data = req.body;
 		const response = await loginUser(data);
-		console.log(response);
-	
 		return res.status(200).json({
 			message: "Success",
 			response

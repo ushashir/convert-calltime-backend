@@ -45,6 +45,7 @@ exports.updateUserSchema = zod_1.default.object({
     confirmPassword: zod_1.default.string().min(4).optional(),
     avatar: zod_1.default.string().optional(),
     isVerified: zod_1.default.boolean().optional(),
+    wallet: zod_1.default.string().optional(),
 });
 exports.createAccountSchema = zod_1.default.object({
     bankName: zod_1.default.string(),
@@ -54,5 +55,6 @@ exports.createAccountSchema = zod_1.default.object({
 });
 exports.updateWalletSchema = zod_1.default.object({
     amount: zod_1.default.string(),
+    email: zod_1.default.string()
 });
 //# sourceMappingURL=validation.js.map
