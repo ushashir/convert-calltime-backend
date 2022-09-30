@@ -43,6 +43,7 @@ router.get("/", auth, async (req:userRequest, res) => {
 	try {
 		const id = req.user.user_id
 		const response = await getById(id)
+		console.log(response);
 		return res.status(200).json({message: "success", response})
 	} catch (error) {
 		res.status(400).json(error)
@@ -89,6 +90,8 @@ router.post("/login", async (req, res) => {
 	try {
 		const data = req.body;
 		const response = await loginUser(data);
+		console.log(response);
+	
 		return res.status(200).json({
 			message: "Success",
 			response

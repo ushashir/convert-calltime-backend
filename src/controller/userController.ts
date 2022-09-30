@@ -51,6 +51,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: true,
 			email: true,
 			phone: true,
+			wallet: true
 		},
 	});
 	sendEmail({ email: (await response).email });
@@ -93,6 +94,7 @@ export async function loginUser(data: Record<string, unknown>) {
 		phone,
 		avatar,
 		isVerified,
+		wallet,
 	} = user;
 	return {
 		token: generateAccessToken(user.id as unknown as string),
@@ -105,6 +107,7 @@ export async function loginUser(data: Record<string, unknown>) {
 			phone,
 			avatar,
 			isVerified,
+			wallet
 		},
 	};
 }

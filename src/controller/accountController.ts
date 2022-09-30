@@ -19,7 +19,6 @@ export async function createAccount(
 			bankName: record.bankName,
 			accountName: record.accountName,
 			accountNumber: record.accountNumber,
-			wallet: record.wallet,
 			userId: userId,
 		},
 	});

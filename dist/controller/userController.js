@@ -50,6 +50,7 @@ async function registerUser(data) {
             userName: true,
             email: true,
             phone: true,
+            wallet: true
         },
     });
     (0, emailServices_1.sendEmail)({ email: (await response).email });
@@ -78,7 +79,7 @@ async function loginUser(data) {
     if (!match) {
         throw "Incorrect password. Access denied";
     }
-    const { id, firstName, lastName, email, userName, phone, avatar, isVerified, } = user;
+    const { id, firstName, lastName, email, userName, phone, avatar, isVerified, wallet, } = user;
     return {
         token: (0, authMiddleware_1.generateAccessToken)(user.id),
         userdata: {
@@ -90,6 +91,7 @@ async function loginUser(data) {
             phone,
             avatar,
             isVerified,
+            wallet
         },
     };
 }
