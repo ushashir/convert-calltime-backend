@@ -42,6 +42,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: record.userName,
 			email: record.email,
 			phone: record.phone,
+			wallet: record.wallet,
 			password: (await encryptPassword(record.password)) as string,
 		},
 		select: {
@@ -54,9 +55,8 @@ export async function registerUser(data: Record<string, unknown>) {
 		},
 	});
 	sendEmail({ email: (await response).email });
-	return `Hello ${
-		(await response).firstName
-	}, please check your email to confirm ${(await response).email}`;
+	return `Hello ${(await response).firstName
+		}, please check your email to confirm ${(await response).email}`;
 }
 
 export async function loginUser(data: Record<string, unknown>) {

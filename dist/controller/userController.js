@@ -41,6 +41,7 @@ async function registerUser(data) {
             userName: record.userName,
             email: record.email,
             phone: record.phone,
+            wallet: record.wallet,
             password: (await (0, hashPassword_1.encryptPassword)(record.password)),
         },
         select: {

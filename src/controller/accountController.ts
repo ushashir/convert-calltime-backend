@@ -19,7 +19,6 @@ export async function createAccount(
       bankName: record.bankName,
       accountName: record.accountName,
       accountNumber: record.accountNumber,
-      wallet: record.wallet,
       userId: userId,
     },
   });
@@ -27,9 +26,9 @@ export async function createAccount(
   return response;
 }
 
-export async function getAccounts(id:string) {
+export async function getAccounts(id: string) {
   const userAccount = await prisma.account.findMany({
-    where:{
+    where: {
       userId: id
     }
   })
@@ -37,6 +36,6 @@ export async function getAccounts(id:string) {
   return userAccount
 }
 
-export async function removeAccount(id:string) {
-  const response = await prisma.account.delete({where:{id:id}})
+export async function removeAccount(id: string) {
+  const response = await prisma.account.delete({ where: { id: id } })
 }

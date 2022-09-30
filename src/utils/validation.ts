@@ -17,6 +17,7 @@ export const registerUSerSchema = z
     userName: z.string(),
     email: z.string().email(),
     phone: z.string(),
+    wallet: z.number().optional().default(0),
     password: z.string({
       required_error: "Password is required",
     }).min(6, { message: "Password must be 6 or more characters long" }),
@@ -49,7 +50,6 @@ export const createAccountSchema = z.object({
   bankName: z.string(),
   accountName: z.string(),
   accountNumber: z.string(),
-  wallet: z.number().optional().default(0),
 });
 
 export const withdrawBalanceSchema = z.object({

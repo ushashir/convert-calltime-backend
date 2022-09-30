@@ -20,6 +20,7 @@ exports.registerUSerSchema = zod_1.default
     userName: zod_1.default.string(),
     email: zod_1.default.string().email(),
     phone: zod_1.default.string(),
+    wallet: zod_1.default.number().optional().default(0),
     password: zod_1.default.string({
         required_error: "Password is required",
     }).min(6, { message: "Password must be 6 or more characters long" }),
@@ -50,7 +51,6 @@ exports.createAccountSchema = zod_1.default.object({
     bankName: zod_1.default.string(),
     accountName: zod_1.default.string(),
     accountNumber: zod_1.default.string(),
-    wallet: zod_1.default.number().optional().default(0),
 });
 exports.withdrawBalanceSchema = zod_1.default.object({
     bankName: zod_1.default.string(),
