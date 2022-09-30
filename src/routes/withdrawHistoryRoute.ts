@@ -1,12 +1,16 @@
 import { Router } from "express";
 import { withdraw } from "../controller/withdrawHistoryController";
+import { auth } from "../utils/authMiddleware";
+import { userRequest } from "../types/express";
 
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req: userRequest, res) => {
     try {
         const data = req.body;
-        const response = await withdraw(data);
+        const id = req.user.user_id;
+
+        const response = await withdraw(data, id);
         return res.status(201).json({
             message: "Success",
             response

@@ -57,6 +57,8 @@ exports.withdrawBalanceSchema = zod_1.default.object({
     accountName: zod_1.default.string(),
     accountNumber: zod_1.default.string(),
     amount: zod_1.default.string(),
-    password: zod_1.default.string(),
+    password: zod_1.default.string({
+        required_error: "Password is required",
+    }).min(6, { message: "Password must be 6 or more characters long" }),
 });
 //# sourceMappingURL=validation.js.map

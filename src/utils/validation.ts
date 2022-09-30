@@ -57,7 +57,9 @@ export const withdrawBalanceSchema = z.object({
   accountName: z.string(),
   accountNumber: z.string(),
   amount: z.string(),
-  password: z.string(),
+  password: z.string({
+    required_error: "Password is required",
+  }).min(6, { message: "Password must be 6 or more characters long" }),
 });
 
 
