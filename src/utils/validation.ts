@@ -51,3 +51,13 @@ export const createAccountSchema = z.object({
   accountNumber: z.string(),
   wallet: z.number().optional().default(0),
 });
+
+export const withdrawBalanceSchema = z.object({
+  bankName: z.string(),
+  accountName: z.string(),
+  accountNumber: z.string(),
+  amount: z.string(),
+  password: z.string(),
+});
+
+

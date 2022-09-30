@@ -8,31 +8,43 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
+  id         String  @id @default(uuid())
   firstName  String
   lastName   String
   userName   String  @unique
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String @default("")
+  avatar     String  @default("")
+  wallet     Int     @default(0)
   isVerified Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
+  accounts        Account[]
+  withdrawHistory WithdrawHistory[]
 }
 
 model Account {
-  id String @id @default(uuid())
-  bankName  String
-  accountName String 
-  accountNumber String @unique
-  wallet  Int  @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  bankName      String
+  accountName   String
+  accountNumber String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  user   User @relation(fields: [userId], onDelete: Cascade, references: [id])
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
+}
+
+model WithdrawHistory {
+  id            String   @id @default(uuid())
+  isSuccessful  Boolean
+  amount        Int
+  accountNumber Int      @unique
+  bankName      String
+  dateCreated   DateTime @default(now())
+  user          User     @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId        String
 }
