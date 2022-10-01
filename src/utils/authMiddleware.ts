@@ -27,6 +27,7 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		const decoded = jwt.verify(token, key);
 		if (!decoded) {
 			res.status(401).send("Unauthorized");
+			return;
 		}
 		const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
@@ -37,10 +38,12 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 
 		if (!user) {
 			res.status(401).send("please register to access our service");
+			return;
 		}
 		req.user = decoded;
 		next();
 	} catch (error) {
 		res.status(400).send(error);
+		return;
 	}
 }

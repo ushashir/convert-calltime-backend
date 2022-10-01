@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withdrawBalanceSchema = exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
+exports.withdrawHistorySchema = exports.walletBalanceSchema = exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.loginUserSchema = zod_1.default.object({
     email: zod_1.default.string().email().optional(),
@@ -42,6 +42,7 @@ exports.updateUserSchema = zod_1.default.object({
     userName: zod_1.default.string().optional(),
     email: zod_1.default.string().email().optional(),
     phone: zod_1.default.string().optional(),
+    wallet: zod_1.default.number().optional(),
     password: zod_1.default.string().min(4).optional(),
     confirmPassword: zod_1.default.string().min(4).optional(),
     avatar: zod_1.default.string().optional(),
@@ -52,11 +53,20 @@ exports.createAccountSchema = zod_1.default.object({
     accountName: zod_1.default.string(),
     accountNumber: zod_1.default.string(),
 });
-exports.withdrawBalanceSchema = zod_1.default.object({
-    bankName: zod_1.default.string(),
-    accountName: zod_1.default.string(),
-    accountNumber: zod_1.default.string(),
-    amount: zod_1.default.string(),
+exports.walletBalanceSchema = zod_1.default.object({
+    bankName: zod_1.default.string().optional(),
+    accountName: zod_1.default.string().optional(),
+    accountNumber: zod_1.default.string().optional(),
+    amount: zod_1.default.number(),
+    password: zod_1.default.string({
+        required_error: "Password is required",
+    }).min(6, { message: "Password must be 6 or more characters long" }),
+});
+exports.withdrawHistorySchema = zod_1.default.object({
+    bankName: zod_1.default.string().optional(),
+    accountName: zod_1.default.string().optional(),
+    accountNumber: zod_1.default.string().optional(),
+    amount: zod_1.default.number(),
     password: zod_1.default.string({
         required_error: "Password is required",
     }).min(6, { message: "Password must be 6 or more characters long" }),

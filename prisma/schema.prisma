@@ -40,9 +40,9 @@ model Account {
 
 model WithdrawHistory {
   id            String   @id @default(uuid())
-  isSuccessful  Boolean
+  isSuccessful  String
   amount        Int
-  accountNumber Int      @unique
+  accountNumber String   @unique
   bankName      String
   dateCreated   DateTime @default(now())
   user          User     @relation(fields: [userId], onDelete: Cascade, references: [id])

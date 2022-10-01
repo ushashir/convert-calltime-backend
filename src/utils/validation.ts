@@ -40,6 +40,7 @@ export const updateUserSchema = z.object({
   userName: z.string().optional(),
   email: z.string().email().optional(),
   phone: z.string().optional(),
+  wallet: z.number().optional(),
   password: z.string().min(4).optional(),
   confirmPassword: z.string().min(4).optional(),
   avatar: z.string().optional(),
@@ -52,11 +53,21 @@ export const createAccountSchema = z.object({
   accountNumber: z.string(),
 });
 
-export const withdrawBalanceSchema = z.object({
-  bankName: z.string(),
-  accountName: z.string(),
-  accountNumber: z.string(),
-  amount: z.string(),
+export const walletBalanceSchema = z.object({
+  bankName: z.string().optional(),
+  accountName: z.string().optional(),
+  accountNumber: z.string().optional(),
+  amount: z.number(),
+  password: z.string({
+    required_error: "Password is required",
+  }).min(6, { message: "Password must be 6 or more characters long" }),
+});
+
+export const withdrawHistorySchema = z.object({
+  bankName: z.string().optional(),
+  accountName: z.string().optional(),
+  accountNumber: z.string().optional(),
+  amount: z.number(),
   password: z.string({
     required_error: "Password is required",
   }).min(6, { message: "Password must be 6 or more characters long" }),
