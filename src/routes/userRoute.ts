@@ -15,6 +15,8 @@ const router = Router();
 
 router.get("/verify/:token", async (req, res) => {
 	const token = req.params.token;
+
+
 	try {
 		const response = await verifyUser(token);
 		return res.status(200).json({ message: "user verified", response });

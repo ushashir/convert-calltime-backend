@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import prisma from "../utils/prismaClient";
 import { userRequest } from "../types/express";
 
@@ -26,7 +26,7 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		const token = authorization.slice(7, authorization.length);
 		const decoded = jwt.verify(token, key);
 		if (!decoded) {
-			res.status(401).send("Unauthorized");
+			return res.status(401).send("Unauthorized");
 		}
 		const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
@@ -36,11 +36,11 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		});
 
 		if (!user) {
-			res.status(401).send("please register to access our service");
+			return res.status(401).send("please register to access our service");
 		}
 		req.user = decoded;
 		next();
 	} catch (error) {
-		res.status(400).send(error);
+		return res.status(400).send(error);
 	}
 }
