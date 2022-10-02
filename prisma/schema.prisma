@@ -28,17 +28,6 @@ model User {
   txRecord        TxRecord[]
 }
 
-// model Account {
-//   id            String   @id @default(uuid())
-//   bankName      String
-//   accountName   String
-//   accountNumber String   @unique
-//   createdAt     DateTime @default(now())
-//   updatedAt     DateTime @updatedAt
-//   accounts Account[]
-//   txRecord TxRecord[]
-// }
-
 model Account {
   id            String   @id @default(uuid())
   bankName      String
