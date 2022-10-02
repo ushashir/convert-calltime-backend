@@ -1,6 +1,12 @@
 import { createAccountSchema } from "../utils/validation";
 import prisma from "../utils/prismaClient";
 
+
+
+
+
+
+
 export async function createAccount(
   data: Record<string, unknown>,
   userId: string
@@ -36,3 +42,13 @@ export async function getAccounts(id:string) {
 
   return userAccount
 }
+
+export async function removeAccount(id:string) {
+  const response = await prisma.account.delete({where:{id:id}})
+}
+
+
+  
+
+
+
