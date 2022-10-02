@@ -40,11 +40,11 @@ export const updateUserSchema = z.object({
   userName: z.string().optional(),
   email: z.string().email().optional(),
   phone: z.string().optional(),
-  wallet: z.number().optional(),
   password: z.string().min(4).optional(),
   confirmPassword: z.string().min(4).optional(),
   avatar: z.string().optional(),
   isVerified: z.boolean().optional(),
+  wallet: z.string().optional()
 });
 
 export const createAccountSchema = z.object({

@@ -42,11 +42,11 @@ exports.updateUserSchema = zod_1.default.object({
     userName: zod_1.default.string().optional(),
     email: zod_1.default.string().email().optional(),
     phone: zod_1.default.string().optional(),
-    wallet: zod_1.default.number().optional(),
     password: zod_1.default.string().min(4).optional(),
     confirmPassword: zod_1.default.string().min(4).optional(),
     avatar: zod_1.default.string().optional(),
     isVerified: zod_1.default.boolean().optional(),
+    wallet: zod_1.default.string().optional()
 });
 exports.createAccountSchema = zod_1.default.object({
     bankName: zod_1.default.string(),
