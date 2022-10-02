@@ -53,6 +53,12 @@ export const createAccountSchema = z.object({
 	wallet: z.number().optional().default(0),
 });
 
+export const txRecordSchema = z.object({
+  network: z.string(),
+  phone: z.string(),
+  amount: z.string(),
+});
+
 export const updateWalletSchema = z.object({
 	amount: z.string(),
 	email: z.string()
