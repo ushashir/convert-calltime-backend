@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createAccount, getAccounts } from "../controller/accountController";
+import { createAccount, getAccounts,removeAccount } from "../controller/accountController";
 import { userRequest } from "../types/express";
 import { auth } from "../utils/authMiddleware";
 
@@ -12,6 +12,7 @@ routes.post("/", auth, async (req: userRequest, res) => {
 		const response = await createAccount(data, user_id);
 		return res.status(201).json({ message: "Success", response });
 	} catch (error) {
+    console.log(error)
 		return res.status(400).json({ Error: error });
 	}
 });
@@ -24,6 +25,16 @@ routes.get("/", auth, async (req: userRequest, res) => {
 	} catch (error) {
 		return res.status(400).json({Error: error})
 	}
+})
+
+routes.delete("/:id", auth, async (req, res) => {
+  try {
+    const id = req.params.id
+    const response = await removeAccount(id);
+    res.status(200).json({message: "Success", response})
+  } catch (error) {
+    res.status(400).json({Error: error})
+  }
 })
 
 export default routes;
