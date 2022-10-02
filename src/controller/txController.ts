@@ -17,4 +17,6 @@ export async function recordTx(txData: Record<string, unknown>, id: string) {
   return response;
 }
 
-export async function allTx(id: string) {}
+export async function allTx(id: string) {
+  return await prisma.txRecord.findMany();
+}

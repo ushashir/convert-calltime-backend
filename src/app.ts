@@ -9,6 +9,7 @@ import helmet from "helmet";
 
 import usersRouter from "./routes/userRoute";
 import accountRouter from "./routes/accountRoute";
+import walletRouter from "./routes/accountRoute";
 import txRoute from "./routes/txRoute";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(cookieParser());
 
 app.use("/api/users", usersRouter);
 app.use("/api/account", accountRouter);
+app.use("/api/wallet", walletRouter);
 app.use("/api/notify", txRoute);
 app.use("/api/transactions", txRoute);
 
