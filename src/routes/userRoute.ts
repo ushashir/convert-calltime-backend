@@ -15,6 +15,8 @@ const router = Router();
 
 router.get("/verify/:token", async (req, res) => {
 	const token = req.params.token;
+
+
 	try {
 		const response = await verifyUser(token);
 		return res.status(200).json({ message: "user verified", response });
@@ -36,7 +38,6 @@ router.post("/confirmation", async (req, res) => {
 			error
 		});
 	}
-
 }
 );
 
@@ -114,7 +115,7 @@ router.post("/forgotpassword", async (req, res) => {
 	}
 });
 
-
+/*POST reset password */
 router.post("/resetpassword", async (req, res) => {
 	const token = req.body.token;
 	const newPassword: string = req.body.password;
@@ -125,6 +126,5 @@ router.post("/resetpassword", async (req, res) => {
 		return res.status(400).json(error);
 	}
 });
-
 
 export default router;

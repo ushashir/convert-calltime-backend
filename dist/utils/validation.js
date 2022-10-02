@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withdrawHistorySchema = exports.walletBalanceSchema = exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
+exports.updateWalletSchema = exports.txRecordSchema = exports.withdrawHistorySchema = exports.walletBalanceSchema = exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.loginUserSchema = zod_1.default.object({
     email: zod_1.default.string().email().optional(),
@@ -70,5 +70,14 @@ exports.withdrawHistorySchema = zod_1.default.object({
     password: zod_1.default.string({
         required_error: "Password is required",
     }).min(6, { message: "Password must be 6 or more characters long" }),
+});
+exports.txRecordSchema = zod_1.default.object({
+    network: zod_1.default.string(),
+    phone: zod_1.default.string(),
+    amount: zod_1.default.string(),
+});
+exports.updateWalletSchema = zod_1.default.object({
+    amount: zod_1.default.string(),
+    email: zod_1.default.string()
 });
 //# sourceMappingURL=validation.js.map

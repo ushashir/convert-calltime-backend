@@ -73,4 +73,15 @@ export const withdrawHistorySchema = z.object({
   }).min(6, { message: "Password must be 6 or more characters long" }),
 });
 
+export const txRecordSchema = z.object({
+  network: z.string(),
+  phone: z.string(),
+  amount: z.string(),
+});
+
+export const updateWalletSchema = z.object({
+  amount: z.string(),
+  email: z.string()
+})
+
 

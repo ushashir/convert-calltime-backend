@@ -18,13 +18,26 @@ model User {
   avatar     String  @default("")
   wallet     Int     @default(0)
   isVerified Boolean @default(false)
+  isAdmin    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   accounts        Account[]
   withdrawHistory WithdrawHistory[]
+  txRecord        TxRecord[]
 }
+
+// model Account {
+//   id            String   @id @default(uuid())
+//   bankName      String
+//   accountName   String
+//   accountNumber String   @unique
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+//   accounts Account[]
+//   txRecord TxRecord[]
+// }
 
 model Account {
   id            String   @id @default(uuid())
@@ -45,6 +58,18 @@ model WithdrawHistory {
   accountNumber String
   bankName      String
   dateCreated   DateTime @default(now())
-  user          User     @relation(fields: [userId], onDelete: Cascade, references: [id])
-  userId        String
+
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId String
+}
+
+model TxRecord {
+  id        String   @id @default(uuid())
+  amount    Int
+  network   String
+  phone     String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId String
 }
