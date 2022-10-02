@@ -49,5 +49,10 @@ export const createAccountSchema = z.object({
   bankName: z.string(),
   accountName: z.string(),
   accountNumber: z.string(),
-  wallet: z.number().optional().default(0),
+});
+
+export const txRecordSchema = z.object({
+  network: z.string(),
+  phone: z.string(),
+  amount: z.string(),
 });

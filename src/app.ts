@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use("/api/users", usersRouter);
 app.use("/api/account", accountRouter);
-app.use("/api/transaction", txRoute);
+app.use("/api/notify", txRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
