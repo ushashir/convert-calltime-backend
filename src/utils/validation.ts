@@ -55,8 +55,8 @@ export const createAccountSchema = z.object({
 
 export const walletBalanceSchema = z.object({
   bankName: z.string().optional(),
-  accountName: z.string().optional(),
-  accountNumber: z.string().optional(),
+  accountName: z.string(),
+  accountNumber: z.string(),
   amount: z.number(),
   password: z.string({
     required_error: "Password is required",

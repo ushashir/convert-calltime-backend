@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { walletBalanceFunc } from "../controller/withdrawHistoryController";
+import { failedHistory, successHistory, walletBalanceFunc } from "../controller/withdrawHistoryController";
 import { userRequest } from "../types/express";
 import { auth } from "../utils/authMiddleware";
 
@@ -23,14 +23,14 @@ router.post("/", auth, async (req: userRequest, res) => {
 
 });
 
-router.post("/succeful", auth, async (req: userRequest, res) => {
+router.post("/successful", auth, async (req: userRequest, res) => {
     try {
         const data = req.body;
         const id = req.user.user_id
-        // const response = await ;
+        const response = await successHistory(data, id);
         return res.status(201).json({
             message: "Success",
-            // response
+            response
         });
     } catch (error) {
         return res.status(400).json({
@@ -45,7 +45,7 @@ router.post("/failed", auth, async (req: userRequest, res) => {
     try {
         const data = req.body;
         const id = req.user.user_id
-        const response = await walletBalanceFunc(data, id);
+        const response = await failedHistory(data, id);
         return res.status(201).json({
             message: "Success",
             response

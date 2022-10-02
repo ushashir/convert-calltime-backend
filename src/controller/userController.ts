@@ -42,7 +42,6 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: record.userName,
 			email: record.email,
 			phone: record.phone,
-			wallet: record.wallet,
 			password: (await encryptPassword(record.password)) as string,
 		},
 		select: {
@@ -52,6 +51,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: true,
 			email: true,
 			phone: true,
+			wallet: true
 		},
 	});
 	sendEmail({ email: (await response).email });
@@ -190,6 +190,7 @@ export async function getById(id: string) {
 			userName: true,
 			phone: true,
 			email: true,
+			wallet: true
 		},
 	});
 }

@@ -42,7 +42,7 @@ model WithdrawHistory {
   id            String   @id @default(uuid())
   isSuccessful  String
   amount        Int
-  accountNumber String   @unique
+  accountNumber String
   bankName      String
   dateCreated   DateTime @default(now())
   user          User     @relation(fields: [userId], onDelete: Cascade, references: [id])

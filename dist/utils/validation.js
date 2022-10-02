@@ -55,8 +55,8 @@ exports.createAccountSchema = zod_1.default.object({
 });
 exports.walletBalanceSchema = zod_1.default.object({
     bankName: zod_1.default.string().optional(),
-    accountName: zod_1.default.string().optional(),
-    accountNumber: zod_1.default.string().optional(),
+    accountName: zod_1.default.string(),
+    accountNumber: zod_1.default.string(),
     amount: zod_1.default.number(),
     password: zod_1.default.string({
         required_error: "Password is required",

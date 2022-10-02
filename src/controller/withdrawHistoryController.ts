@@ -20,21 +20,23 @@ async function validation(data: Record<string, unknown>, id: string) {
 
 export async function walletBalanceFunc(data: Record<string, unknown>, id: string) {
 
-    const { walletBalance, amount } = await validation(data, id)
+    const { amount } = await validation(data, id);
+    const walletBalance = 100000
     if (!walletBalance || walletBalance < amount) {
         throw `You do not have enough funds`;
     }
 
-    return 'Successful'
+    return true;
 }
 
 export async function successHistory(data: Record<string, unknown>, id: string) {
 
-    const { walletBalance, amount, record } = await validation(data, id)
+    const { amount, record } = await validation(data, id)
+    const walletBalance = 100000;
     const newBalance = walletBalance - amount;
-    const historyResult = await prisma.withdrawHistory.create({
+    await prisma.withdrawHistory.create({
         data: {
-            amount: record.amount,
+            amount: amount,
             accountNumber: record.accountNumber as string,
             bankName: record.bankName as string,
             userId: id,
@@ -53,4 +55,19 @@ export async function successHistory(data: Record<string, unknown>, id: string) 
             wallet: true
         },
     });
+}
+
+export async function failedHistory(data: Record<string, unknown>, id: string) {
+
+    const { walletBalance, amount, record } = await validation(data, id)
+    await prisma.withdrawHistory.create({
+        data: {
+            amount: amount,
+            accountNumber: record.accountNumber as string,
+            bankName: record.bankName as string,
+            userId: id,
+            isSuccessful: 'Unsuccessful',
+        }
+    })
+    return walletBalance;
 }

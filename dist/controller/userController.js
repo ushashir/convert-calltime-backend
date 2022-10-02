@@ -41,7 +41,6 @@ async function registerUser(data) {
             userName: record.userName,
             email: record.email,
             phone: record.phone,
-            wallet: record.wallet,
             password: (await (0, hashPassword_1.encryptPassword)(record.password)),
         },
         select: {
@@ -51,6 +50,7 @@ async function registerUser(data) {
             userName: true,
             email: true,
             phone: true,
+            wallet: true
         },
     });
     (0, emailServices_1.sendEmail)({ email: (await response).email });
@@ -174,6 +174,7 @@ async function getById(id) {
             userName: true,
             phone: true,
             email: true,
+            wallet: true
         },
     });
 }

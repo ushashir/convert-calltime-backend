@@ -22,6 +22,7 @@ router.get("/verify/:token", async (req, res) => {
 		return res.status(400).json(error);
 	}
 });
+
 router.post("/confirmation", async (req, res) => {
 	try {
 
