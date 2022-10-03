@@ -15,16 +15,17 @@ model User {
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String
-  isVerified Boolean @default(false)
+  avatar     String  @default("https://cdn-icons-png.flaticon.com/512/80/80889.png")
   wallet     Int     @default(0)
+  isVerified Boolean @default(false)
   isAdmin    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  txRecord TxRecord[]
+  accounts        Account[]
+  withdrawHistory WithdrawHistory[]
+  txRecord        TxRecord[]
 }
 
 model Account {
@@ -39,6 +40,18 @@ model Account {
   userId String
 }
 
+model WithdrawHistory {
+  id            String   @id @default(uuid())
+  isSuccessful  String
+  amount        Int
+  accountNumber String
+  bankName      String
+  createdAt     DateTime @default(now())
+
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId String
+}
+
 model TxRecord {
   id              String @id @default(uuid())
   amount          Int
@@ -47,6 +60,7 @@ model TxRecord {
   phone           String
   email           String
   status          String @default("pending")
+
 
   user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String

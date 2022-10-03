@@ -177,6 +177,7 @@ async function getById(id) {
             userName: true,
             phone: true,
             email: true,
+            wallet: true
         },
     });
 }
