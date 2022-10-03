@@ -14,7 +14,7 @@ export async function updateWallet(amount: string, id: string) {
 			id: id
 		}
 	})
-	if (!user) throw "user doesnot exist";
+	if (!user) throw "user record not found";
 
 	const newBal = user.wallet + record;
 

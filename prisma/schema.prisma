@@ -15,7 +15,7 @@ model User {
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String  @default("")
+  avatar     String  @default("https://cdn-icons-png.flaticon.com/512/80/80889.png")
   wallet     Int     @default(0)
   isVerified Boolean @default(false)
   isAdmin    Boolean @default(false)
@@ -53,12 +53,17 @@ model WithdrawHistory {
 }
 
 model TxRecord {
-  id        String   @id @default(uuid())
-  amount    Int
-  network   String
-  phone     String
-  createdAt DateTime @default(now())
+  id              String @id @default(uuid())
+  amount          Int
+  amountToReceive Int
+  network         String
+  phone           String
+  email           String
+  status          String @default("pending")
+
 
   user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
+
+  createdAt DateTime @default(now())
 }
