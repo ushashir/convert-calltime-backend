@@ -65,3 +65,13 @@ export async function recordTx(txData: Record<string, unknown>, id: string) {
   });
     return response
 }
+
+export async function userTx(id:string) {
+    const userTx = await prisma.txRecord.findMany({
+        where:{
+            userId: id
+        }
+    })
+    if(!userTx) throw "No transaction for this user"
+    return userTx
+}
