@@ -32,6 +32,7 @@ app.use("/api/account", accountRoute_1.default);
 app.use("/api/withdraw", withdrawHistoryRoute_1.default);
 app.use("/api/wallet", accountRoute_2.default);
 app.use("/api/notify", txRoute_1.default);
+app.use("/api/usertxhistory", txRoute_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next((0, http_errors_1.default)(404));

@@ -15,7 +15,7 @@ model User {
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String  @default("")
+  avatar     String  @default("https://cdn-icons-png.flaticon.com/512/80/80889.png")
   wallet     Int     @default(0)
   isVerified Boolean @default(false)
   isAdmin    Boolean @default(false)
@@ -60,6 +60,10 @@ model TxRecord {
   phone           String
   email           String
   status          String @default("pending")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d90bf326a022c1741839bd49cda8494e5572405
 
   user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String

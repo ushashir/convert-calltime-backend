@@ -70,3 +70,14 @@ export async function failedHistory(data: Record<string, unknown>, id: string) {
 
     return walletBalance
 }
+
+export async function userWithdrawal(id:string){
+    const oneUserWithdrawal = await prisma.withdrawHistory.findMany({
+        where: {
+            userId : id
+        }
+    })
+    if(oneUserWithdrawal.length < 1) throw "No withdrawals yet"
+    console.log(oneUserWithdrawal)
+    return oneUserWithdrawal;
+}
