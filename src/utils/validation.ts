@@ -17,6 +17,7 @@ export const registerUSerSchema = z
     userName: z.string(),
     email: z.string().email(),
     phone: z.string(),
+    wallet: z.number().optional().default(0),
     password: z.string({
       required_error: "Password is required",
     }).min(6, { message: "Password must be 6 or more characters long" }),
@@ -43,6 +44,7 @@ export const updateUserSchema = z.object({
   confirmPassword: z.string().min(4).optional(),
   avatar: z.string().optional(),
   isVerified: z.boolean().optional(),
+  wallet: z.string().optional()
 });
 
 export const createAccountSchema = z.object({
@@ -51,8 +53,35 @@ export const createAccountSchema = z.object({
   accountNumber: z.string(),
 });
 
+export const walletBalanceSchema = z.object({
+  bankName: z.string().optional(),
+  accountName: z.string(),
+  accountNumber: z.string(),
+  amount: z.number(),
+  password: z.string({
+    required_error: "Password is required",
+  }).min(6, { message: "Password must be 6 or more characters long" }),
+});
+
+export const withdrawHistorySchema = z.object({
+  bankName: z.string().optional(),
+  accountName: z.string().optional(),
+  accountNumber: z.string().optional(),
+  amount: z.number(),
+  password: z.string({
+    required_error: "Password is required",
+  }).min(6, { message: "Password must be 6 or more characters long" }),
+});
+
 export const txRecordSchema = z.object({
   network: z.string(),
   phone: z.string(),
   amount: z.string(),
 });
+
+export const updateWalletSchema = z.object({
+  amount: z.string(),
+  email: z.string()
+})
+
+

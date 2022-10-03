@@ -51,6 +51,7 @@ async function registerUser(data) {
             userName: true,
             email: true,
             phone: true,
+            wallet: true
         },
     });
     (0, emailServices_1.sendEmail)({ email: (await response).email });
@@ -58,7 +59,6 @@ async function registerUser(data) {
 }
 exports.registerUser = registerUser;
 async function loginUser(data) {
-    //check that information entered by user matches the login schema
     const isValidData = validation_1.loginUserSchema.safeParse(data);
     if (!isValidData.success) {
         throw isValidData.error;
@@ -80,7 +80,7 @@ async function loginUser(data) {
     if (!match) {
         throw "Incorrect password. Access denied";
     }
-    const { id, firstName, lastName, email, userName, phone, avatar, isVerified, } = user;
+    const { id, firstName, lastName, email, userName, phone, avatar, isVerified, wallet, } = user;
     return {
         token: (0, authMiddleware_1.generateAccessToken)(user.id),
         userdata: {
@@ -92,6 +92,7 @@ async function loginUser(data) {
             phone,
             avatar,
             isVerified,
+            wallet
         },
     };
 }
@@ -131,6 +132,7 @@ async function updateUser(data) {
             password: record.password
                 ? (await (0, hashPassword_1.encryptPassword)(record.password))
                 : user.password,
+            wallet: record.wallet
         },
         select: {
             avatar: true,
@@ -138,6 +140,7 @@ async function updateUser(data) {
             lastName: true,
             userName: true,
             phone: true,
+            wallet: true
         },
     });
 }
@@ -174,6 +177,7 @@ async function getById(id) {
             userName: true,
             phone: true,
             email: true,
+            wallet: true
         },
     });
 }

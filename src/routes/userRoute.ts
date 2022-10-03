@@ -25,6 +25,7 @@ router.get("/verify/:token", async (req, res) => {
 		return res.status(400).json(error);
 	}
 });
+
 router.post("/confirmation", async (req, res) => {
 	try {
 
@@ -38,15 +39,14 @@ router.post("/confirmation", async (req, res) => {
 			error
 		});
 	}
-
 }
 );
 
-router.get("/", auth, async (req:userRequest, res) => {
+router.get("/", auth, async (req: userRequest, res) => {
 	try {
 		const id = req.user.user_id
 		const response = await getById(id)
-		return res.status(200).json({message: "success", response})
+		return res.status(200).json({ message: "success", response })
 	} catch (error) {
 		res.status(400).json(error)
 	}
@@ -116,7 +116,7 @@ router.post("/forgotpassword", async (req, res) => {
 	}
 });
 
-
+/*POST reset password */
 router.post("/resetpassword", async (req, res) => {
 	const token = req.body.token;
 	const newPassword: string = req.body.password;
