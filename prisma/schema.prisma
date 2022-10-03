@@ -43,10 +43,14 @@ model Account {
 model TxRecord{
   id String @id @default(uuid())
   amount Int
+  amountToReceive Int
   network String
   phone String
-  createdAt DateTime @default(now())
+  email String
+  status String @default("pending")
 
   user   User @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
+  
+  createdAt DateTime @default(now())
 }
