@@ -26,7 +26,8 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		const token = authorization.slice(7, authorization.length);
 		const decoded = jwt.verify(token, key);
 		if (!decoded) {
-			return res.status(401).send("Unauthorized");
+			res.status(401).send("Unauthorized");
+			return;
 		}
 		const { user_id } = decoded as { [key: string]: string };
 		const user = await prisma.user.findUnique({
@@ -36,11 +37,13 @@ export async function auth(req: userRequest, res: Response, next: NextFunction) 
 		});
 
 		if (!user) {
-			return res.status(401).send("please register to access our service");
+			res.status(401).send("please register to access our service");
+			return;
 		}
 		req.user = decoded;
 		next();
 	} catch (error) {
-		return res.status(400).send(error);
+		res.status(400).send(error);
+		return;
 	}
 }
