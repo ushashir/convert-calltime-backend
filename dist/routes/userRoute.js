@@ -27,10 +27,12 @@ router.post("/confirmation", async (req, res) => {
         });
     }
 });
+/* Get single user */
 router.get("/", authMiddleware_1.auth, async (req, res) => {
     try {
         const id = req.user.user_id;
         const response = await (0, userController_1.getById)(id);
+        console.log(response);
         return res.status(200).json({ message: "success", response });
     }
     catch (error) {
@@ -98,6 +100,7 @@ router.post("/forgotpassword", async (req, res) => {
         return res.status(400).json({ message: error });
     }
 });
+/*POST reset password */
 router.post("/resetpassword", async (req, res) => {
     const token = req.body.token;
     const newPassword = req.body.password;

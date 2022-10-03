@@ -52,6 +52,7 @@ export async function registerUser(data: Record<string, unknown>) {
 			userName: true,
 			email: true,
 			phone: true,
+			wallet: true
 		},
 	});
 	sendEmail({ email: (await response).email });
@@ -61,8 +62,6 @@ export async function registerUser(data: Record<string, unknown>) {
 }
 
 export async function loginUser(data: Record<string, unknown>) {
-	//check that information entered by user matches the login schema
-
 	const isValidData = loginUserSchema.safeParse(data);
 
 	if (!isValidData.success) {
@@ -96,6 +95,7 @@ export async function loginUser(data: Record<string, unknown>) {
 		phone,
 		avatar,
 		isVerified,
+		wallet,
 	} = user;
 	return {
 		token: generateAccessToken(user.id as unknown as string),
@@ -108,7 +108,9 @@ export async function loginUser(data: Record<string, unknown>) {
 			phone,
 			avatar,
 			isVerified,
+			wallet
 		},
+
 	};
 }
 
@@ -150,6 +152,7 @@ export async function updateUser(data: Record<string, unknown>) {
 			password: record.password
 				? ((await encryptPassword(record.password)) as string)
 				: (user.password as string),
+			wallet: record.wallet as unknown as number
 		},
 		select: {
 			avatar: true,
@@ -157,6 +160,7 @@ export async function updateUser(data: Record<string, unknown>) {
 			lastName: true,
 			userName: true,
 			phone: true,
+			wallet: true
 		},
 	});
 }
@@ -194,3 +198,4 @@ export async function getById(id: string) {
 		},
 	});
 }
+
