@@ -25,9 +25,10 @@ export async function recordTx(txData: Record<string, unknown>, id: string) {
 
         }
     })
-   
-    let timeDiff = new Date().getTime() - new Date(lastTx[0].createdAt).getTime()
-    if(Math.abs(timeDiff) <= 60000) throw "Duplicate transaction, please try again later"
+    if (lastTx.length > 0) {
+        let timeDiff = new Date().getTime() - new Date(lastTx[0].createdAt).getTime()
+        if(Math.abs(timeDiff) <= 60000) throw "Duplicate transaction, please try again later"
+  }
     const response = await prisma.txRecord.create({
         data: {
             amount: Number(amount),
