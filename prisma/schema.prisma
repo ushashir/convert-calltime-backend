@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
+  id         String  @id @default(uuid())
   firstName  String
   lastName   String
   userName   String  @unique
@@ -17,9 +17,8 @@ model User {
   password   String
   avatar     String
   isVerified Boolean @default(false)
-  wallet  Int  @default(0)
-  isAdmin Boolean @default(false)
-
+  wallet     Int     @default(0)
+  isAdmin    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,28 +28,28 @@ model User {
 }
 
 model Account {
-  id String @id @default(uuid())
-  bankName  String
-  accountName String 
-  accountNumber String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  bankName      String
+  accountName   String
+  accountNumber String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  user   User @relation(fields: [userId], onDelete: Cascade, references: [id])
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
 }
 
-model TxRecord{
-  id String @id @default(uuid())
-  amount Int
+model TxRecord {
+  id              String @id @default(uuid())
+  amount          Int
   amountToReceive Int
-  network String
-  phone String
-  email String
-  status String @default("pending")
+  network         String
+  phone           String
+  email           String
+  status          String @default("pending")
 
-  user   User @relation(fields: [userId], onDelete: Cascade, references: [id])
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
-  
+
   createdAt DateTime @default(now())
 }
