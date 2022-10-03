@@ -9,6 +9,7 @@ import helmet from "helmet";
 
 import usersRouter from "./routes/userRoute";
 import accountRouter from "./routes/accountRoute";
+import withdrawHistoryRouter from "./routes/withdrawHistoryRoute";
 import walletRouter from "./routes/accountRoute";
 import txRoute from "./routes/txRoute";
 
@@ -30,9 +31,11 @@ app.use(cookieParser());
 
 app.use("/api/users", usersRouter);
 app.use("/api/account", accountRouter);
+app.use("/api/withdraw", withdrawHistoryRouter);
 app.use("/api/wallet", walletRouter);
 app.use("/api/notify", txRoute);
-app.use("/api/transactions", txRoute);
+
+app.use("/api/usertxhistory", txRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

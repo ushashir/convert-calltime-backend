@@ -1,5 +1,4 @@
-import { response, Router } from "express";
-
+import { Router } from "express";
 import { updateWallet } from "../controller/walletController";
 import { userRequest } from "../types/express";
 import { auth } from "../utils/authMiddleware";
@@ -11,11 +10,10 @@ const router = Router();
 // That is the amount to be updated will be added to the current wallet balance.
 // update wallet endpoint
 
-router.post("/update", auth, async (req:userRequest, res) => {
+router.patch("/", auth, async (req:userRequest, res) => {
 	try {
 		const amount = req.body.amount;
 		const id = req.user.user_id;
-		// const amount = "100";
 		const response = await updateWallet(amount,id);
 		return res.status(200).json({
 			message: "Success",

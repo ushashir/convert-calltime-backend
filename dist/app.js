@@ -13,6 +13,7 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const accountRoute_1 = __importDefault(require("./routes/accountRoute"));
+const withdrawHistoryRoute_1 = __importDefault(require("./routes/withdrawHistoryRoute"));
 const accountRoute_2 = __importDefault(require("./routes/accountRoute"));
 const txRoute_1 = __importDefault(require("./routes/txRoute"));
 const app = (0, express_1.default)();
@@ -28,9 +29,14 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cookie_parser_1.default)());
 app.use("/api/users", userRoute_1.default);
 app.use("/api/account", accountRoute_1.default);
+app.use("/api/withdraw", withdrawHistoryRoute_1.default);
 app.use("/api/wallet", accountRoute_2.default);
 app.use("/api/notify", txRoute_1.default);
+<<<<<<< HEAD
 app.use("/api/transactions", txRoute_1.default);
+=======
+app.use("/api/usertxhistory", txRoute_1.default);
+>>>>>>> 3d90bf326a022c1741839bd49cda8494e5572405
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next((0, http_errors_1.default)(404));

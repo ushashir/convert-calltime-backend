@@ -8,45 +8,62 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
+  id         String  @id @default(uuid())
   firstName  String
   lastName   String
   userName   String  @unique
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String
+  avatar     String  @default("https://cdn-icons-png.flaticon.com/512/80/80889.png")
+  wallet     Int     @default(0)
   isVerified Boolean @default(false)
-  wallet  Int  @default(0)
-  isAdmin Boolean @default(false)
-
+  isAdmin    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  txRecord TxRecord[]
+  accounts        Account[]
+  withdrawHistory WithdrawHistory[]
+  txRecord        TxRecord[]
 }
 
 model Account {
-  id String @id @default(uuid())
-  bankName  String
-  accountName String 
-  accountNumber String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  bankName      String
+  accountName   String
+  accountNumber String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  user   User @relation(fields: [userId], onDelete: Cascade, references: [id])
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
 }
 
-model TxRecord{
-  id String @id @default(uuid())
-  amount Int
-  network String
-  phone String
-  createdAt DateTime @default(now())
+model WithdrawHistory {
+  id            String   @id @default(uuid())
+  isSuccessful  String
+  amount        Int
+  accountNumber String
+  bankName      String
+  createdAt     DateTime @default(now())
 
-  user   User @relation(fields: [userId], onDelete: Cascade, references: [id])
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
+}
+
+model TxRecord {
+  id              String @id @default(uuid())
+  amount          Int
+  amountToReceive Int
+  network         String
+  phone           String
+  email           String
+  status          String @default("pending")
+
+
+  user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
+  userId String
+
+  createdAt DateTime @default(now())
 }
