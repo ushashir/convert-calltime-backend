@@ -17,8 +17,10 @@ export const registerUSerSchema = z
     userName: z.string(),
     email: z.string().email(),
     phone: z.string(),
-    password: z.string().min(4),
-    confirmPassword: z.string().min(4),
+    password: z.string({
+      required_error: "Password is required",
+    }).min(6, { message: "Password must be 6 or more characters long" }),
+    confirmPassword: z.string().min(6, { message: "Confirm password must be 6 or more characters long" }),
     avatar: z.string().optional(),
     isVerified: z.boolean().optional(),
   })
@@ -47,5 +49,10 @@ export const createAccountSchema = z.object({
   bankName: z.string(),
   accountName: z.string(),
   accountNumber: z.string(),
-  wallet: z.number().optional().default(0),
+});
+
+export const txRecordSchema = z.object({
+  network: z.string(),
+  phone: z.string(),
+  amount: z.string(),
 });

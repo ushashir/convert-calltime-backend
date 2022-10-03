@@ -10,14 +10,17 @@ import {
 } from "../controller/userController";
 import { auth } from "../utils/authMiddleware";
 import { userRequest } from "../types/express";
+import { PayFlutter } from "../controller/flutterwaveController";
 
 const router = Router();
 
 router.get("/verify/:token", async (req, res) => {
 	const token = req.params.token;
+
+
 	try {
 		const response = await verifyUser(token);
-		res.status(200).json({ message: "user verified", response });
+		return res.status(200).json({ message: "user verified", response });
 	} catch (error) {
 		return res.status(400).json(error);
 	}
@@ -125,5 +128,21 @@ router.post("/resetpassword", async (req, res) => {
 	}
 });
 
+router.post("/payment", async (req, res) => {
+  console.log("Ran here");
+  try {
+    const response = await PayFlutter();
+    res.status(200).json({
+      message: "Successful",
+      response,
+    });
+    return;
+  } catch (error) {
+    return res.status(400).json({
+      message: "An error occurred",
+      error,
+    });
+  }
+});
 
 export default router;

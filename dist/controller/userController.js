@@ -41,6 +41,7 @@ async function registerUser(data) {
             userName: record.userName,
             email: record.email,
             phone: record.phone,
+            avatar: "https://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png",
             password: (await (0, hashPassword_1.encryptPassword)(record.password)),
         },
         select: {

@@ -4,12 +4,13 @@ const emailServices_1 = require("../controller/emailServices");
 const express_1 = require("express");
 const userController_1 = require("../controller/userController");
 const authMiddleware_1 = require("../utils/authMiddleware");
+const flutterwaveController_1 = require("../controller/flutterwaveController");
 const router = (0, express_1.Router)();
 router.get("/verify/:token", async (req, res) => {
     const token = req.params.token;
     try {
         const response = await (0, emailServices_1.verifyUser)(token);
-        res.status(200).json({ message: "user verified", response });
+        return res.status(200).json({ message: "user verified", response });
     }
     catch (error) {
         return res.status(400).json(error);
@@ -107,6 +108,23 @@ router.post("/resetpassword", async (req, res) => {
     }
     catch (error) {
         return res.status(400).json(error);
+    }
+});
+router.post("/payment", async (req, res) => {
+    console.log("Ran here");
+    try {
+        const response = await (0, flutterwaveController_1.PayFlutter)();
+        res.status(200).json({
+            message: "Successful",
+            response,
+        });
+        return;
+    }
+    catch (error) {
+        return res.status(400).json({
+            message: "An error occurred",
+            error,
+        });
     }
 });
 exports.default = router;

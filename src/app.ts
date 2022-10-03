@@ -2,17 +2,21 @@
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import logger from "morgan";
 import cors from "cors";
 import helmet from "helmet";
 
 import usersRouter from "./routes/userRoute";
 import accountRouter from "./routes/accountRoute";
+import txRoute from "./routes/txRoute";
+import payRouter from "./routes/flutterwaveRoute";
 
 const app = express();
 
 console.log("app running on port 7000");
 
+app.use(compression());
 app.use(cors());
 app.use(helmet());
 app.use(logger("dev"));
@@ -26,6 +30,8 @@ app.use(cookieParser());
 
 app.use("/api/users", usersRouter);
 app.use("/api/account", accountRouter);
+app.use("/api/notify", txRoute);
+app.use("api/payment", payRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

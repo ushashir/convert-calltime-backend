@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import supertest from "supertest";
 import app from "../app";
 import prisma from "../utils/prismaClient";

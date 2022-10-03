@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
+exports.txRecordSchema = exports.createAccountSchema = exports.updateUserSchema = exports.registerUSerSchema = exports.emailSchema = exports.loginUserSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.loginUserSchema = zod_1.default.object({
     email: zod_1.default.string().email().optional(),
@@ -20,8 +20,10 @@ exports.registerUSerSchema = zod_1.default
     userName: zod_1.default.string(),
     email: zod_1.default.string().email(),
     phone: zod_1.default.string(),
-    password: zod_1.default.string().min(4),
-    confirmPassword: zod_1.default.string().min(4),
+    password: zod_1.default.string({
+        required_error: "Password is required",
+    }).min(6, { message: "Password must be 6 or more characters long" }),
+    confirmPassword: zod_1.default.string().min(6, { message: "Confirm password must be 6 or more characters long" }),
     avatar: zod_1.default.string().optional(),
     isVerified: zod_1.default.boolean().optional(),
 })
@@ -48,6 +50,10 @@ exports.createAccountSchema = zod_1.default.object({
     bankName: zod_1.default.string(),
     accountName: zod_1.default.string(),
     accountNumber: zod_1.default.string(),
-    wallet: zod_1.default.number().optional().default(0),
+});
+exports.txRecordSchema = zod_1.default.object({
+    network: zod_1.default.string(),
+    phone: zod_1.default.string(),
+    amount: zod_1.default.string(),
 });
 //# sourceMappingURL=validation.js.map
