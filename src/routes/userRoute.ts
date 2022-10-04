@@ -6,16 +6,16 @@ import {
 	updateUser,
 	forgotPassword,
 	resetPassword,
-	getById
+	getById,
 } from "../controller/userController";
 import { auth } from "../utils/authMiddleware";
 import { userRequest } from "../types/express";
+import { PayFlutter } from "../controller/flutterwaveController";
 
 const router = Router();
 
 router.get("/verify/:token", async (req, res) => {
 	const token = req.params.token;
-
 
 	try {
 		const response = await verifyUser(token);
@@ -27,29 +27,27 @@ router.get("/verify/:token", async (req, res) => {
 
 router.post("/confirmation", async (req, res) => {
 	try {
-
 		const response = await sendEmail(req.body);
-		return res.status(200).json({ message: "Email sent successfully", response });
-
+		return res
+			.status(200)
+			.json({ message: "Email sent successfully", response });
 	} catch (error) {
-
 		return res.status(400).json({
 			message: "An error occurred",
-			error
+			error,
 		});
 	}
-}
-);
-/* GET get single user by id*/
+});
+
 router.get("/", auth, async (req: userRequest, res) => {
 	try {
-		const id = req.user.user_id
-		const response = await getById(id)
-		return res.status(200).json({ message: "success", response })
+		const id = req.user.user_id;
+		const response = await getById(id);
+		return res.status(200).json({ message: "success", response });
 	} catch (error) {
-		res.status(400).json(error)
+		res.status(400).json(error);
 	}
-})
+});
 
 /* POST register users*/
 router.post("/", async (req, res) => {
@@ -58,11 +56,11 @@ router.post("/", async (req, res) => {
 		const response = await registerUser(data);
 		return res.status(201).json({
 			message: "Success",
-			response
+			response,
 		});
 	} catch (error) {
 		return res.status(400).json({
-			message: error
+			message: error,
 		});
 	}
 });
@@ -76,15 +74,14 @@ router.patch("/", auth, async (req: userRequest, res) => {
 		const response = await updateUser({ ...data, id });
 		return res.status(200).json({
 			message: "Success",
-			response
+			response,
 		});
 	} catch (error) {
 		return res.status(400).json({
-			message: error
+			message: error,
 		});
 	}
 });
-
 
 /* POST Login users */
 router.post("/login", async (req, res) => {
@@ -93,13 +90,12 @@ router.post("/login", async (req, res) => {
 		const response = await loginUser(data);
 		return res.status(200).json({
 			message: "Success",
-			response
+			response,
 		});
 	} catch (error) {
 		return res.status(400).json({ message: error });
 	}
 });
-
 
 /*POST forgot password */
 router.post("/forgotpassword", async (req, res) => {
@@ -108,7 +104,7 @@ router.post("/forgotpassword", async (req, res) => {
 		const response = await forgotPassword(data);
 		return res.status(200).json({
 			message: "Check your email to reset your password",
-			response
+			response,
 		});
 	} catch (error) {
 		return res.status(400).json({ message: error });
@@ -124,6 +120,25 @@ router.post("/resetpassword", async (req, res) => {
 		return res.status(200).json({ message: "Success" });
 	} catch (error) {
 		return res.status(400).json(error);
+	}
+});
+
+router.post("/payment", async (req, res) => {
+	console.log("Ran here");
+	const data = req.body;
+	console.log("Ran here data", data);
+	try {
+		const response = await PayFlutter(data);
+		res.status(200).json({
+			message: "Successful",
+			response,
+		});
+		return;
+	} catch (error) {
+		return res.status(400).json({
+			message: "An error occurred",
+			error,
+		});
 	}
 });
 

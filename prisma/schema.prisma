@@ -15,7 +15,7 @@ model User {
   email      String  @unique
   phone      String  @unique
   password   String
-  avatar     String  @default("https://cdn-icons-png.flaticon.com/512/80/80889.png")
+  avatar     String
   wallet     Int     @default(0)
   isVerified Boolean @default(false)
   isAdmin    Boolean @default(false)
