@@ -35,6 +35,8 @@ app.use("/api/withdraw", withdrawHistoryRouter);
 app.use("/api/wallet", walletRouter);
 app.use("/api/notify", txRoute);
 
+app.use("/api/usertxhistory", txRoute);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
