@@ -1,26 +1,41 @@
 import { updateWalletSchema } from '../utils/validation';
 import prisma from "../utils/prismaClient";
-import { updateUser } from './userController';
 
-export async function updateWallet(amount: string, id: string) {
-	const isAmount = updateWalletSchema.safeParse(amount);
-	if (!isAmount.success) {
-		throw isAmount.error;
+export async function updateWallet(data: Record<string, unknown>, id: string) {
+	const validData = updateWalletSchema.safeParse(data);
+	const email = data.email as string;
+	if (!validData.success) {
+		throw validData.error;
 	}
-	const record = Number(isAmount.data);
+	// validate admin 
+	const user = await prisma.user.findFirst({ where: { id } });
+	if (!user) {
+		throw "Cannot update wallet, owner cannot be verified";
+	}
+	if (user.isAdmin === true) {
+		throw "Access Denied. You are not an admin"
+	}
 
-	const user = await prisma.user.findUnique({
+	const confirmMail = await prisma.user.findUnique({
 		where: {
-			id: id
+			email
 		}
 	})
-	if (!user) throw "user record not found";
+	if (!confirmMail) throw "Email not found";
+	const amount = Number(data.amount);
+	const newBal = confirmMail.wallet + amount * 0.7;
 
-	const newBal = user.wallet + record;
+	const response = await prisma.user.update({
+		where: {
+			email
+		},
+		data: {
+			wallet:
+				newBal
+		}
+	});
 
-	const response = await updateUser({ wallet: newBal, id })
-    
-	return response;
+	return response; 
 
 }
 

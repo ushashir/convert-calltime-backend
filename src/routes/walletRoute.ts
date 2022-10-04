@@ -5,24 +5,17 @@ import { auth } from "../utils/authMiddleware";
 
 const router = Router();
 
-// Create an API to update the user wallet.
-// This endpoint will take the amount and user email from the request body, this amount is then used to update the user wallet.
-// That is the amount to be updated will be added to the current wallet balance.
-// update wallet endpoint
-
 router.patch("/", auth, async (req:userRequest, res) => {
 	try {
-		const amount = req.body.amount;
+		const data = req.body;
 		const id = req.user.user_id;
-		const response = await updateWallet(amount,id);
+		const response = await updateWallet(data, id);
 		return res.status(200).json({
 			message: "Success",
-			response,
+			response
 		})
 	} catch (error) {
-		console.log(error);
-		
-		res.status(500).json({
+		return res.status(400).json({
 			message: error
 		})
 	}
