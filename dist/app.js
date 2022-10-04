@@ -16,7 +16,6 @@ const accountRoute_1 = __importDefault(require("./routes/accountRoute"));
 const withdrawHistoryRoute_1 = __importDefault(require("./routes/withdrawHistoryRoute"));
 const accountRoute_2 = __importDefault(require("./routes/accountRoute"));
 const txRoute_1 = __importDefault(require("./routes/txRoute"));
-const flutterwaveRoute_1 = __importDefault(require("./routes/flutterwaveRoute"));
 const app = (0, express_1.default)();
 console.log("app running on port 7000");
 app.use((0, compression_1.default)());
@@ -33,7 +32,6 @@ app.use("/api/account", accountRoute_1.default);
 app.use("/api/withdraw", withdrawHistoryRoute_1.default);
 app.use("/api/wallet", accountRoute_2.default);
 app.use("/api/notify", txRoute_1.default);
-app.use("api/payment", flutterwaveRoute_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next((0, http_errors_1.default)(404));

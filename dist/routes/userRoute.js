@@ -19,12 +19,14 @@ router.get("/verify/:token", async (req, res) => {
 router.post("/confirmation", async (req, res) => {
     try {
         const response = await (0, emailServices_1.sendEmail)(req.body);
-        return res.status(200).json({ message: "Email sent successfully", response });
+        return res
+            .status(200)
+            .json({ message: "Email sent successfully", response });
     }
     catch (error) {
         return res.status(400).json({
             message: "An error occurred",
-            error
+            error,
         });
     }
 });
@@ -45,12 +47,12 @@ router.post("/", async (req, res) => {
         const response = await (0, userController_1.registerUser)(data);
         return res.status(201).json({
             message: "Success",
-            response
+            response,
         });
     }
     catch (error) {
         return res.status(400).json({
-            message: error
+            message: error,
         });
     }
 });
@@ -62,12 +64,12 @@ router.patch("/", authMiddleware_1.auth, async (req, res) => {
         const response = await (0, userController_1.updateUser)({ ...data, id });
         return res.status(200).json({
             message: "Success",
-            response
+            response,
         });
     }
     catch (error) {
         return res.status(400).json({
-            message: error
+            message: error,
         });
     }
 });
@@ -78,7 +80,7 @@ router.post("/login", async (req, res) => {
         const response = await (0, userController_1.loginUser)(data);
         return res.status(200).json({
             message: "Success",
-            response
+            response,
         });
     }
     catch (error) {
@@ -92,7 +94,7 @@ router.post("/forgotpassword", async (req, res) => {
         const response = await (0, userController_1.forgotPassword)(data);
         return res.status(200).json({
             message: "Check your email to reset your password",
-            response
+            response,
         });
     }
     catch (error) {
@@ -113,8 +115,10 @@ router.post("/resetpassword", async (req, res) => {
 });
 router.post("/payment", async (req, res) => {
     console.log("Ran here");
+    const data = req.body;
+    console.log("Ran here data", data);
     try {
-        const response = await (0, flutterwaveController_1.PayFlutter)();
+        const response = await (0, flutterwaveController_1.PayFlutter)(data);
         res.status(200).json({
             message: "Successful",
             response,

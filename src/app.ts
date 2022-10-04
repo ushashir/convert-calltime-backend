@@ -12,7 +12,6 @@ import accountRouter from "./routes/accountRoute";
 import withdrawHistoryRouter from "./routes/withdrawHistoryRoute";
 import walletRouter from "./routes/accountRoute";
 import txRoute from "./routes/txRoute";
-import payRouter from "./routes/flutterwaveRoute";
 
 const app = express();
 
@@ -35,7 +34,6 @@ app.use("/api/account", accountRouter);
 app.use("/api/withdraw", withdrawHistoryRouter);
 app.use("/api/wallet", walletRouter);
 app.use("/api/notify", txRoute);
-app.use("api/payment", payRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
