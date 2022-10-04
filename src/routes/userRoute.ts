@@ -40,7 +40,7 @@ router.post("/confirmation", async (req, res) => {
 	}
 }
 );
-
+/* GET get single user by id*/
 router.get("/", auth, async (req: userRequest, res) => {
 	try {
 		const id = req.user.user_id

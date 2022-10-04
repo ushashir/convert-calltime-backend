@@ -61,7 +61,6 @@ model TxRecord {
   email           String
   status          String @default("pending")
 
-
   user   User   @relation(fields: [userId], onDelete: Cascade, references: [id])
   userId String
 

@@ -27,6 +27,7 @@ router.post("/confirmation", async (req, res) => {
         });
     }
 });
+/* GET get single user by id*/
 router.get("/", authMiddleware_1.auth, async (req, res) => {
     try {
         const id = req.user.user_id;

@@ -26,4 +26,4 @@ routes.get("/", auth, async (req: userRequest, res) => {
 	}
 })
 
-export default routes;
+export default routes; 
