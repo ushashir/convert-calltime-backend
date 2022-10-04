@@ -2,23 +2,22 @@ import { updateWalletSchema } from '../utils/validation';
 import prisma from "../utils/prismaClient";
 import { updateUser } from './userController';
 
-export async function updateWallet(amount: string, id: string) {
-	const isAmount = updateWalletSchema.safeParse(amount);
-	if (!isAmount.success) {
-		throw isAmount.error;
+export async function updateWallet(data: Record<string, unknown>) {
+	const validData = updateWalletSchema.safeParse(data);
+	const email = data.email as string;
+	if (!validData.success) {
+		throw validData.error;
 	}
-	const record = Number(isAmount.data);
-
 	const user = await prisma.user.findUnique({
 		where: {
-			id: id
+			email
 		}
 	})
 	if (!user) throw "user record not found";
-
-	const newBal = user.wallet + record;
-
-	const response = await updateUser({ wallet: newBal, id })
+	const amount = Number(data.amount);
+	const newBal = user.wallet + amount * 0.7;
+	// const response = User ${email} updated account balance is ${newBal} ;
+	const response = await updateUser({ wallet: newBal})
     
 	return response;
 
