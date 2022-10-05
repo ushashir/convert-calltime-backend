@@ -75,6 +75,9 @@ export async function userWithdrawal(id:string){
     const oneUserWithdrawal = await prisma.withdrawHistory.findMany({
         where: {
             userId : id
+        },
+        orderBy: {
+            createdAt: "asc"
         }
     })
     if(oneUserWithdrawal.length < 1) throw "No withdrawals yet"
