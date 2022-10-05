@@ -2,7 +2,7 @@ import { Router } from "express";
 import { userRequest } from "../types/express";
 import { auth } from "../utils/authMiddleware";
 
-import { recordTx, userTx } from "../controller/txController";
+import { recordTx, userTx, allTx } from "../controller/txController";
 
 const route = Router();
 
@@ -25,6 +25,15 @@ route.get("/", auth, async (req: userRequest, res) => {
 	} catch (error) {
 		return res.status(400).json({ Error, error });
 	}
+});
+
+route.get("/all", auth, async (req: userRequest, res) => {
+  try {
+    const response = await allTx();
+    res.status(200).json({ message: "success", response });
+  } catch (error) {
+    return res.status(400).json({ Error, error });
+  }
 });
 
 export default route;

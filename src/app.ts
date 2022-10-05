@@ -33,7 +33,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/account", accountRouter);
 app.use("/api/withdraw", withdrawHistoryRouter);
 app.use("/api/wallet", walletRouter);
-app.use("/api/notify", txRoute);
+app.use("/api/transactions", txRoute);
 
 app.use("/api/usertxhistory", txRoute);
 
