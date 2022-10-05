@@ -10,7 +10,7 @@ import helmet from "helmet";
 import usersRouter from "./routes/userRoute";
 import accountRouter from "./routes/accountRoute";
 import withdrawHistoryRouter from "./routes/withdrawHistoryRoute";
-import walletRouter from "./routes/accountRoute";
+import walletRouter from "./routes/walletRoute";
 import txRoute from "./routes/txRoute";
 
 const app = express();

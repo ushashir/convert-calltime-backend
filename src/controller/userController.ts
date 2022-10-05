@@ -124,7 +124,6 @@ export async function updateUser(data: Record<string, unknown>) {
 	}
 
 	const avatar = data.avatar as string;
-
 	let uploadedResponse;
 	if (avatar) {
 		uploadedResponse = await cloudinary.uploader.upload(avatar, {
